@@ -149,10 +149,10 @@ impl Default for ClapChop {
 }
 
 impl Plugin for ClapChop {
-    const NAME: &'static str = "ClapChop";
-    const VENDOR: &'static str = "ClapChop";
-    const URL: &'static str = "https://example.com/clapchop";
-    const EMAIL: &'static str = "support@example.com";
+    const NAME: &'static str = "clapchop";
+    const VENDOR: &'static str = "grimoire.supply";
+    const URL: &'static str = "https://github.com/jarofghosts/clapchop";
+    const EMAIL: &'static str = "me@jessekeane.me";
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 

@@ -1,23 +1,15 @@
  # clapchop
-ergonomic sample chopping in a CLAP plugin
-
+ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
  
 ## development
-
-Build
-
-- Prerequisites: Rust (stable), Cargo
-- Build release bundle:
 
 ```bash
 cargo xtask bundle clapchop --release
 ```
 
-The bundler produces a `.clap` bundle at `target/bundled/ClapChop.clap`. Copy the entire bundle directory to your CLAP plug-ins folder (e.g., `~/.clap/` on Linux).
+The bundler produces a `.clap` bundle at `target/bundled/clapchop.clap`.
  
- Usage
- 
-- Copy or symlink the bundled plugin (`ClapChop.clap`) to your CLAP plug-ins folder (e.g., `~/.clap/`).
+- Copy or symlink the bundled plugin (`clapchop.clap`) to your CLAP plug-ins folder (e.g., `~/.clap/`).
  - Load in a CLAP-compatible host.
  - In the UI:
    - Enter a file path to a WAV and click "Load".
@@ -25,13 +17,7 @@ The bundler produces a `.clap` bundle at `target/bundled/ClapChop.clap`. Copy th
    - Set the starting MIDI note; pads map row-major across 16 notes.
    - Toggle "Hold continue beyond slice" to keep playing beyond the slice end while the note is held.
  
- Notes
- 
- - Basic on-the-fly resampling is applied if the sample rate differs from the host.
- - Slices are beat-quantized; up to 16 slices are generated for a 4x4 grid.
- 
- License
- 
- MIT
- 
+### license
+
+MIT
 
