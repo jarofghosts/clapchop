@@ -1,8 +1,8 @@
+use nih_plug::params::persist::PersistentField;
 use std::path::{Path, PathBuf};
 use std::sync::{atomic::AtomicBool, Arc};
 
 use crossbeam_utils::atomic::AtomicCell;
-use nih_plug::params::persist::PersistentField;
 use nih_plug::prelude::*;
 use nih_plug_egui::{create_egui_editor, egui, widgets, EguiState};
 use parking_lot::RwLock;
@@ -10,9 +10,8 @@ use rfd::FileDialog;
 
 use crate::preset::{load_preset, save_preset, PresetData};
 use crate::slicing::SliceAlgorithm;
-use crate::{ClapChopParams, SharedState, UiPadEvent};
+use crate::{ClapChop, ClapChopParams, SharedState, UiPadEvent};
 
-const MAX_PAD_COUNT: usize = 64;
 pub const DEFAULT_EDITOR_WIDTH: u32 = 720;
 pub const DEFAULT_EDITOR_HEIGHT: u32 = 820;
 const PAD_WIDTH: f32 = 72.0;
@@ -33,7 +32,7 @@ impl Default for GuiState {
         Self {
             file_input: String::new(),
             last_loaded_path: None,
-            pressed_pads: vec![false; MAX_PAD_COUNT],
+            pressed_pads: vec![false; crate::MAX_PADS],
             last_preset_path: None,
             preset_message: None,
             preset_error: None,
@@ -65,7 +64,7 @@ pub fn build_editor(
                     let shared_guard = shared.read();
                     shared_guard.slices.regions.len()
                 };
-                pad_count = pad_count.min(MAX_PAD_COUNT);
+                pad_count = pad_count.min(crate::MAX_PADS);
 
                 if params.num_pads.value() != pad_count as i32 {
                     setter.begin_set_parameter(&params.num_pads);
@@ -124,7 +123,7 @@ fn sample_loader_row(
         if load_button.clicked() {
             let path = state.file_input.trim().to_string();
             if !path.is_empty() {
-                trigger_sample_load(path, params.clone(), shared.clone());
+                ClapChop::request_sample_load(path, params.clone(), shared.clone());
             }
         }
 
@@ -171,7 +170,7 @@ fn sample_loader_row(
     });
 
     if let Some(path) = path_to_load {
-        trigger_sample_load(path, params.clone(), shared.clone());
+        ClapChop::request_sample_load(path, params.clone(), shared.clone());
     }
 }
 
@@ -184,8 +183,11 @@ fn parameter_row(
     ui.horizontal(|ui| {
         ui.label("Starting Note");
         let mut start_note_value = params.starting_note.value();
-        let slider_response =
-            ui.add(egui::Slider::new(&mut start_note_value, 0..=119).clamp_to_range(true).text(""));
+        let slider_response = ui.add(
+            egui::Slider::new(&mut start_note_value, 0..=119)
+                .clamping(egui::SliderClamping::Always)
+                .text(""),
+        );
         let note_name = midi_note_name(start_note_value as u8);
         ui.monospace(note_name);
         if slider_response.changed() {
@@ -344,7 +346,7 @@ fn apply_preset(
         if !path_string.is_empty() {
             state.file_input = path_string.clone();
             state.last_loaded_path = Some(path_string.clone());
-            trigger_sample_load(path_string, params.clone(), shared.clone());
+            ClapChop::request_sample_load(path_string, params.clone(), shared.clone());
         }
     } else {
         state.file_input.clear();
@@ -427,7 +429,7 @@ fn pad_grid(
     start_note: u8,
     pad_count: usize,
 ) {
-    let pad_count = pad_count.min(MAX_PAD_COUNT);
+    let pad_count = pad_count.min(crate::MAX_PADS);
     let mut trimmed_note_offs = Vec::new();
     if pad_count < state.pressed_pads.len() {
         for (idx, pressed) in state.pressed_pads.iter().enumerate().skip(pad_count) {
@@ -589,45 +591,4 @@ fn status_section(ui: &mut egui::Ui, state: &GuiState, shared: &Arc<RwLock<Share
     } else {
         ui.label("No sample loaded.");
     }
-}
-
-fn trigger_sample_load(
-    path: String,
-    params: Arc<ClapChopParams>,
-    shared: Arc<RwLock<SharedState>>,
-) {
-    {
-        let mut guard = shared.write();
-        guard.loading = true;
-        guard.last_error = None;
-    }
-
-    std::thread::spawn(move || match crate::sample::load_sample(&path) {
-        Ok(sample) => {
-            let bpm = params.bpm.value();
-            let algo = params.slice_algo.value();
-            let slices = crate::slicing::compute_slices(&sample, bpm, algo, MAX_PAD_COUNT);
-            let pad_count = slices.regions.len();
-
-            let mut guard = shared.write();
-            guard.sample = Some(sample);
-            guard.slices = slices;
-            guard.sample_generation = guard.sample_generation.wrapping_add(1).max(1);
-            guard.slices_generation = guard
-                .slices_generation
-                .wrapping_add(1)
-                .max(guard.sample_generation);
-            guard.loaded_path = Some(path);
-            guard.loading = false;
-            guard.last_error = None;
-            guard.pending_reslice = false;
-            guard.pad_visual_state.resize(pad_count, false);
-            guard.pad_visual_generation = guard.pad_visual_generation.wrapping_add(1);
-        }
-        Err(err) => {
-            let mut guard = shared.write();
-            guard.loading = false;
-            guard.last_error = Some(err);
-        }
-    });
 }

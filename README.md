@@ -1,5 +1,22 @@
  # clapchop
 ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
+
+![](./screenshot.png)
+
+## usage
+
+1. load a sample with the "Browse..." button.
+2. choose a slice algorithm / BPM to set chop points.
+3. hit the buttons
+
+## options
+
+- "Hold beyond slice"
+  - continuing to hold the trigger button will continue playing sample past the chop point.
+- "Gate on release"
+  - depressing the trigger button will stop sample playback before the chop endpoint.
+
+these options are both _enabled_ by default. that means that the triggering of a sample chop is entirely dependent on holding the trigger button.
  
 ## development
 

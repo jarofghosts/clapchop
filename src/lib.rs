@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use nih_plug::params::persist::PersistentField;
 use nih_plug::prelude::*;
 use nih_plug_egui::EguiState;
 use parking_lot::RwLock;
@@ -13,7 +14,7 @@ use sample::{LoadedSample, SamplePlayer};
 use slicing::{SliceAlgorithm, Slices};
 
 const MIN_PADS: usize = 0;
-const MAX_PADS: usize = 64;
+pub const MAX_PADS: usize = 64;
 
 #[derive(Clone)]
 pub enum UiPadEvent {
@@ -59,6 +60,9 @@ pub struct ClapChopParams {
     #[persist = "editor-state"]
     pub editor_state: Arc<EguiState>,
 
+    #[persist = "last-sample-path"]
+    pub last_sample_path: Arc<RwLock<Option<String>>>,
+
     #[id = "startnote"]
     pub starting_note: IntParam,
 
@@ -82,6 +86,7 @@ impl Default for ClapChopParams {
     fn default() -> Self {
         Self {
             editor_state: EguiState::from_size(ui::DEFAULT_EDITOR_WIDTH, ui::DEFAULT_EDITOR_HEIGHT),
+            last_sample_path: Arc::new(RwLock::new(None)),
             starting_note: IntParam::new(
                 "Starting MIDI Note",
                 36,
@@ -99,8 +104,8 @@ impl Default for ClapChopParams {
             )
             .with_unit(" BPM"),
             slice_algo: EnumParam::new("Slice Algorithm", SliceAlgorithm::Quarter),
-            hold_continue: BoolParam::new("Hold Continue", false),
-            gate_on_release: BoolParam::new("Gate Playback", false),
+            hold_continue: BoolParam::new("Hold Continue", true),
+            gate_on_release: BoolParam::new("Gate Playback", true),
             num_pads: IntParam::new(
                 "Number of Pads",
                 16,
@@ -122,6 +127,7 @@ pub struct ClapChop {
     last_bpm: f32,
     last_algo: SliceAlgorithm,
     last_num_pads: usize,
+    persisted_path_seen: Option<String>,
 }
 
 impl Default for ClapChop {
@@ -144,6 +150,7 @@ impl Default for ClapChop {
             last_bpm: 120.0,
             last_algo: SliceAlgorithm::Quarter,
             last_num_pads: Self::default_num_pads(),
+            persisted_path_seen: None,
         }
     }
 }
@@ -210,6 +217,7 @@ impl Plugin for ClapChop {
         _aux: &mut AuxiliaryBuffers,
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
+        self.ensure_persisted_sample_loaded();
         self.sync_shared_state();
         self.sync_num_pads();
         self.handle_reslice_requests();
@@ -222,6 +230,40 @@ impl Plugin for ClapChop {
 }
 
 impl ClapChop {
+    fn ensure_persisted_sample_loaded(&mut self) {
+        let persisted_path = self.params.last_sample_path.read().clone();
+        let (loaded_path, loading) = {
+            let shared = self.shared.read();
+            (shared.loaded_path.clone(), shared.loading)
+        };
+
+        if let Some(path) = persisted_path {
+            if path.is_empty() {
+                self.persisted_path_seen = None;
+                return;
+            }
+
+            if loading {
+                self.persisted_path_seen = Some(path);
+                return;
+            }
+
+            if loaded_path.as_deref() == Some(path.as_str()) {
+                self.persisted_path_seen = Some(path);
+                return;
+            }
+
+            if self.persisted_path_seen.as_deref() == Some(path.as_str()) {
+                return;
+            }
+
+            Self::request_sample_load(path.clone(), self.params.clone(), self.shared.clone());
+            self.persisted_path_seen = Some(path);
+        } else {
+            self.persisted_path_seen = None;
+        }
+    }
+
     fn sync_shared_state(&mut self) {
         let (new_sample, new_slices) = {
             let shared = self.shared.read();
@@ -443,6 +485,48 @@ impl ClapChop {
             shared.pad_visual_state[pad_index] = active;
             shared.pad_visual_generation = shared.pad_visual_generation.wrapping_add(1);
         }
+    }
+
+    pub(crate) fn request_sample_load(
+        path: String,
+        params: Arc<ClapChopParams>,
+        shared: Arc<RwLock<SharedState>>,
+    ) {
+        params.last_sample_path.set(Some(path.clone()));
+        {
+            let mut guard = shared.write();
+            guard.loading = true;
+            guard.last_error = None;
+        }
+
+        std::thread::spawn(move || match sample::load_sample(&path) {
+            Ok(sample) => {
+                let bpm = params.bpm.value();
+                let algo = params.slice_algo.value();
+                let slices = slicing::compute_slices(&sample, bpm, algo, MAX_PADS);
+                let pad_count = slices.regions.len();
+
+                let mut guard = shared.write();
+                guard.sample = Some(sample);
+                guard.slices = slices;
+                guard.sample_generation = guard.sample_generation.wrapping_add(1).max(1);
+                guard.slices_generation = guard
+                    .slices_generation
+                    .wrapping_add(1)
+                    .max(guard.sample_generation);
+                guard.loaded_path = Some(path);
+                guard.loading = false;
+                guard.last_error = None;
+                guard.pending_reslice = false;
+                guard.pad_visual_state.resize(pad_count, false);
+                guard.pad_visual_generation = guard.pad_visual_generation.wrapping_add(1);
+            }
+            Err(err) => {
+                let mut guard = shared.write();
+                guard.loading = false;
+                guard.last_error = Some(err);
+            }
+        });
     }
 }
 
