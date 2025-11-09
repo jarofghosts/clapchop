@@ -17,7 +17,7 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 - "Gate on release"
   - depressing the trigger button will stop sample playback before the chop endpoint.
 
-these options are both _enabled_ by default.
+these options are both enabled by default, which makes sample playback naturally follow button presses.
 
 ## development
 
