@@ -63,6 +63,9 @@ pub struct ClapChopParams {
     #[persist = "last-sample-path"]
     pub last_sample_path: Arc<RwLock<Option<String>>>,
 
+    #[persist = "ui-scale"]
+    pub ui_scale: Arc<RwLock<f32>>,
+
     #[id = "startnote"]
     pub starting_note: IntParam,
 
@@ -87,6 +90,7 @@ impl Default for ClapChopParams {
         Self {
             editor_state: EguiState::from_size(ui::DEFAULT_EDITOR_WIDTH, ui::DEFAULT_EDITOR_HEIGHT),
             last_sample_path: Arc::new(RwLock::new(None)),
+            ui_scale: Arc::new(RwLock::new(1.0)),
             starting_note: IntParam::new(
                 "Starting MIDI Note",
                 36,
