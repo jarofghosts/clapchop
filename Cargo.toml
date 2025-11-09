@@ -4,10 +4,10 @@ members = ["xtask"]
  [package]
  name = "clapchop"
  version = "0.1.0"
- authors = ["Your Name <you@example.com>"]
+ authors = ["jesse keane <me@jessekeane.me>"]
  edition = "2021"
- description = "CLAP plugin sampler that slices a sample into chops and maps to pads"
- license = "MIT OR Apache-2.0"
+ description = "ergonomic sample chopping"
+ license = "MIT"
 
  [lib]
  crate-type = ["cdylib"]
@@ -38,12 +38,12 @@ nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug", branch = "ma
  bundle_target = ["clap"]
 
  [package.metadata.nih-plug.clap]
- vendor = "ClapChop"
- name = "ClapChop"
- url = "https://example.com/clapchop"
- manual_url = "https://example.com/clapchop/manual"
- support_url = "https://example.com/clapchop/support"
+ vendor = "grimoire.supply"
+ name = "clapchop"
+ url = "https://github.com/jarofghosts/clapchop"
+ manual_url = "https://github.com/jarofghosts/clapchop"
+ support_url = "https://github.com/jarofghosts/clapchop"
  version = "0.1.0"
- description = "Slice a sample into musical chops and play on pads"
+ description = "ergonomic sample chopping"
 
 

@@ -55,7 +55,7 @@ pub fn build_editor(
             egui::CentralPanel::default().show(egui_ctx, |ui| {
                 sync_gui_state(state, &shared);
 
-                ui.heading("ClapChop");
+                ui.heading("clapchop");
                 ui.separator();
 
                 sample_loader_row(ui, state, &params, &shared);
@@ -183,7 +183,16 @@ fn parameter_row(
 ) {
     ui.horizontal(|ui| {
         ui.label("Starting Note");
-        ui.add(widgets::ParamSlider::for_param(&params.starting_note, setter).with_width(140.0));
+        let mut start_note_value = params.starting_note.value();
+        let slider_response =
+            ui.add(egui::Slider::new(&mut start_note_value, 0..=119).clamp_to_range(true).text(""));
+        let note_name = midi_note_name(start_note_value as u8);
+        ui.monospace(note_name);
+        if slider_response.changed() {
+            setter.begin_set_parameter(&params.starting_note);
+            setter.set_parameter(&params.starting_note, start_note_value);
+            setter.end_set_parameter(&params.starting_note);
+        }
 
         ui.separator();
         ui.label("BPM");
@@ -241,7 +250,7 @@ fn preset_row(
 ) {
     ui.horizontal(|ui| {
         if ui.button("Save Preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("ClapChop Preset", &["json", "clapchop"]);
+            let mut dialog = FileDialog::new().add_filter("clapchop Preset", &["json", "clapchop"]);
 
             if let Some(initial) = preset_dialog_initial_path(state) {
                 if initial.is_dir() {
@@ -270,7 +279,7 @@ fn preset_row(
         }
 
         if ui.button("Load Preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("ClapChop Preset", &["json", "clapchop"]);
+            let mut dialog = FileDialog::new().add_filter("clapchop Preset", &["json", "clapchop"]);
 
             if let Some(initial) = preset_dialog_initial_path(state) {
                 if initial.is_dir() {
@@ -468,8 +477,9 @@ fn pad_grid(
         .spacing(egui::vec2(PAD_SPACING, PAD_SPACING))
         .show(ui, |ui| {
             for row in 0..rows {
+                let display_row = rows - 1 - row;
                 for col in 0..cols {
-                    let pad_index = row * cols + col;
+                    let pad_index = display_row * cols + col;
                     if pad_index >= pad_count {
                         ui.add_enabled(
                             false,
