@@ -8,6 +8,8 @@ on:
 jobs:
   bundle:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       BUNDLE_NAME: clapchop.clap
 
