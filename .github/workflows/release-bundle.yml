@@ -22,7 +22,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build CLAP bundle
-        run: cargo run --package xtask -- bundle clap --release
+        run: cargo run --package xtask -- bundle clapchop --release
 
       - name: Archive bundle
         run: |

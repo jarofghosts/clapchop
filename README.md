@@ -17,7 +17,7 @@ Build
 - Build release bundle:
 
 ```bash
-cargo xtask bundle clap --release
+cargo xtask bundle clapchop --release
 ```
 
 The bundler produces a `.clap` bundle at `target/bundled/ClapChop.clap`. Copy the entire bundle directory to your CLAP plug-ins folder (e.g., `~/.clap/` on Linux).
