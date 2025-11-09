@@ -26,21 +26,21 @@ jobs:
       - name: Build CLAP bundle
         run: cargo run --package xtask -- bundle clapchop --release
 
-      - name: Archive bundle
+      - name: Prepare bundle asset
         run: |
           mkdir -p dist
-          zip -r "dist/clapchop-${GITHUB_REF_NAME:-${GITHUB_SHA}}-clap.zip" "target/bundled/${BUNDLE_NAME}"
+          cp "target/bundled/${BUNDLE_NAME}" "dist/clapchop-${GITHUB_REF_NAME:-${GITHUB_SHA}}.clap"
 
       - name: Upload workflow artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
           name: clapchop-clap-bundle
-          path: dist/clapchop-*-clap.zip
+          path: dist/clapchop-*.clap
 
       - name: Upload release asset
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/clapchop-*-clap.zip
+          files: dist/clapchop-*.clap
 
