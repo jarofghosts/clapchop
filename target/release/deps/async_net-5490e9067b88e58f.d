@@ -1,0 +1,11 @@
+/mnt/ssd/code/clapchop/target/release/deps/libasync_net-5490e9067b88e58f.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/unix.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/addr.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/tcp.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/udp.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/libasync_net-5490e9067b88e58f.rlib: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/unix.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/addr.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/tcp.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/udp.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/async_net-5490e9067b88e58f.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/unix.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/addr.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/tcp.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/udp.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/unix.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/addr.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/tcp.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-net-2.0.0/src/udp.rs:

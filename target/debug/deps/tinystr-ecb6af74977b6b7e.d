@@ -1,0 +1,12 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libtinystr-ecb6af74977b6b7e.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/macros.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ascii.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/asciibyte.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/error.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/int_ops.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/unvalidated.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ule.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/tinystr-ecb6af74977b6b7e.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/macros.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ascii.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/asciibyte.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/error.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/int_ops.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/unvalidated.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ule.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/macros.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ascii.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/asciibyte.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/error.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/int_ops.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/unvalidated.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tinystr-0.8.2/src/ule.rs:

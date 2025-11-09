@@ -1,0 +1,10 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libecolor-c49451023278c330.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/color32.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva_gamma.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/rgba.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hex_color_runtime.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/ecolor-c49451023278c330.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/color32.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva_gamma.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/rgba.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hex_color_runtime.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/color32.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva_gamma.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hsva.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/rgba.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ecolor-0.31.1/src/hex_color_runtime.rs:

@@ -1,0 +1,10 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libwriteable-d06a9f28ca7a27eb.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/cmp.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/impls.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/ops.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/parts_write_adapter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/try_writeable.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/writeable-d06a9f28ca7a27eb.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/cmp.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/impls.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/ops.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/parts_write_adapter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/try_writeable.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/cmp.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/impls.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/ops.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/parts_write_adapter.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/writeable-0.6.2/src/try_writeable.rs:

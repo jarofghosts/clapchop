@@ -1,0 +1,11 @@
+/mnt/ssd/code/clapchop/target/release/deps/libenumflags2-b33d117bdd851cd4.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/formatting.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/fallible.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/iter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/const_api.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/libenumflags2-b33d117bdd851cd4.rlib: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/formatting.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/fallible.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/iter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/const_api.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/enumflags2-b33d117bdd851cd4.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/formatting.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/fallible.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/iter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/const_api.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/formatting.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/fallible.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/iter.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/enumflags2-0.7.12/src/const_api.rs:

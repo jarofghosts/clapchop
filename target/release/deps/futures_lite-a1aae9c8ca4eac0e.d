@@ -1,0 +1,11 @@
+/mnt/ssd/code/clapchop/target/release/deps/libfutures_lite-a1aae9c8ca4eac0e.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/future.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/prelude.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/stream.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/io.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/libfutures_lite-a1aae9c8ca4eac0e.rlib: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/future.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/prelude.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/stream.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/io.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/futures_lite-a1aae9c8ca4eac0e.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/future.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/prelude.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/stream.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/io.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/future.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/prelude.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/stream.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-2.6.1/src/io.rs:

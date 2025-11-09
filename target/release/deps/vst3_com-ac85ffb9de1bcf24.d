@@ -1,0 +1,12 @@
+/mnt/ssd/code/clapchop/target/release/deps/libvst3_com-ac85ffb9de1bcf24.rmeta: /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/ptr.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/mod.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/iunknown.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/offset.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/sys.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/libvst3_com-ac85ffb9de1bcf24.rlib: /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/ptr.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/mod.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/iunknown.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/offset.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/sys.rs
+
+/mnt/ssd/code/clapchop/target/release/deps/vst3_com-ac85ffb9de1bcf24.d: /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/ptr.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/mod.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/iunknown.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/offset.rs /home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/sys.rs
+
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/lib.rs:
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/ptr.rs:
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/mod.rs:
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/interfaces/iunknown.rs:
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/offset.rs:
+/home/jarofghosts/.cargo/git/checkouts/vst3-sys-d94cbae274204c7a/b3ff4d7/com/src/sys.rs:

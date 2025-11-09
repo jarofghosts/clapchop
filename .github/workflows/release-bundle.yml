@@ -1,0 +1,44 @@
+name: Release CLAP Bundle
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_NAME: clapchop.clap
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libgtk-3-dev libasound2-dev
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build CLAP bundle
+        run: cargo xtask bundle clap --release
+
+      - name: Archive bundle
+        run: |
+          mkdir -p dist
+          zip -r "dist/clapchop-${GITHUB_REF_NAME:-${GITHUB_SHA}}-clap.zip" "target/bundled/${BUNDLE_NAME}"
+
+      - name: Upload workflow artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: clapchop-clap-bundle
+          path: dist/clapchop-*-clap.zip
+
+      - name: Upload release asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/clapchop-*-clap.zip
+

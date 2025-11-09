@@ -1,0 +1,10 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libkeyboard_types-66e17aef9fa8afc0.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/code.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/key.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/location.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/modifiers.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/shortcuts.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/keyboard_types-66e17aef9fa8afc0.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/code.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/key.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/location.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/modifiers.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/shortcuts.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/code.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/key.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/location.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/modifiers.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/keyboard-types-0.6.2/src/shortcuts.rs:

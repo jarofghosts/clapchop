@@ -1,0 +1,49 @@
+[workspace]
+members = ["xtask"]
+
+ [package]
+ name = "clapchop"
+ version = "0.1.0"
+ authors = ["Your Name <you@example.com>"]
+ edition = "2021"
+ description = "CLAP plugin sampler that slices a sample into chops and maps to pads"
+ license = "MIT OR Apache-2.0"
+
+ [lib]
+ crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug", branch = "master" }
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug", branch = "master", package = "nih_plug_egui" }
+ egui = "0.26"
+ parking_lot = "0.12"
+ hound = "3.5"
+symphonia = { version = "0.5", default-features = false, features = ["mp3"] }
+ thiserror = "1.0"
+ serde = { version = "1.0", features = ["derive"] }
+ serde_json = "1.0"
+rfd = "0.14"
+crossbeam-utils = { version = "0.8", default-features = false, features = ["std"] }
+
+[dev-dependencies]
+nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug", branch = "master" }
+
+ [profile.release]
+ lto = "fat"
+ codegen-units = 1
+ opt-level = 3
+
+ [package.metadata.nih-plug]
+ # Generate CLAP and other bundles on build
+ bundle_target = ["clap"]
+
+ [package.metadata.nih-plug.clap]
+ vendor = "ClapChop"
+ name = "ClapChop"
+ url = "https://example.com/clapchop"
+ manual_url = "https://example.com/clapchop/manual"
+ support_url = "https://example.com/clapchop/support"
+ version = "0.1.0"
+ description = "Slice a sample into musical chops and play on pads"
+
+

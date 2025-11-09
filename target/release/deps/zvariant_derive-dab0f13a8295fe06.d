@@ -1,0 +1,10 @@
+/mnt/ssd/code/clapchop/target/release/deps/libzvariant_derive-dab0f13a8295fe06.so: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/dict.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/type.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/utils.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/value.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/../README.md
+
+/mnt/ssd/code/clapchop/target/release/deps/zvariant_derive-dab0f13a8295fe06.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/dict.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/type.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/utils.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/value.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/../README.md
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/dict.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/type.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/utils.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/value.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/zvariant_derive-4.2.0/src/../README.md:

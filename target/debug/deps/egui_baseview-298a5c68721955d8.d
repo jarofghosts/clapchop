@@ -1,0 +1,12 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libegui_baseview-298a5c68721955d8.rmeta: /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/translate.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/window.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/libegui_baseview-298a5c68721955d8.rlib: /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/translate.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/window.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/egui_baseview-298a5c68721955d8.d: /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/lib.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl/renderer.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/translate.rs /home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/window.rs
+
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/lib.rs:
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer.rs:
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl.rs:
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/renderer/opengl/renderer.rs:
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/translate.rs:
+/home/jarofghosts/.cargo/git/checkouts/egui-baseview-86e23f13b9c000a6/ec70c3f/src/window.rs:

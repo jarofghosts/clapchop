@@ -1,0 +1,11 @@
+/mnt/ssd/code/clapchop/target/debug/deps/libbitflags-be2d0f5244f79e97.rmeta: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/iter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/parser.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/traits.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/public.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/internal.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/external.rs
+
+/mnt/ssd/code/clapchop/target/debug/deps/bitflags-be2d0f5244f79e97.d: /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/lib.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/iter.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/parser.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/traits.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/public.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/internal.rs /home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/external.rs
+
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/lib.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/iter.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/parser.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/traits.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/public.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/internal.rs:
+/home/jarofghosts/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.10.0/src/external.rs:
