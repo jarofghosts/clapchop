@@ -4,6 +4,11 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 
 ![Screenshot of clapchop plugin running in Bitwig Studio](./screenshot.png)
 
+## installation
+
+- grab the latest `.clap` file release from [GitHub](https://github.com/jarofghosts/clapchop/releases)
+- copy or symlink the plugin to your CLAP plug-ins folder (e.g., `~/.clap/`).
+
 ## usage
 
 1. load a sample with the "Browse..." button.
@@ -25,8 +30,8 @@ these options are both enabled by default, which makes sample playback naturally
 cargo run --package xtask -- bundle clapchop --release
 ```
 
-- The bundler produces a `.clap` bundle at `target/bundled/clapchop.clap`.
-- Copy or symlink the bundled plugin (`clapchop.clap`) to your CLAP plug-ins folder (e.g., `~/.clap/`).
+- the bundler produces a `.clap` bundle at `target/bundled/clapchop.clap`.
+- copy or symlink the plugin to your CLAP plug-ins folder (e.g., `~/.clap/`).
 
 ### license
 
