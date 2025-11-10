@@ -3,7 +3,7 @@ members = ["xtask"]
 
  [package]
  name = "clapchop"
- version = "0.2.0"
+ version = "0.3.0"
  authors = ["jesse keane <me@jessekeane.me>"]
  edition = "2021"
  description = "ergonomic sample chopper"
@@ -43,5 +43,5 @@ nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug", branch = "ma
  url = "https://github.com/jarofghosts/clapchop"
  manual_url = "https://github.com/jarofghosts/clapchop"
  support_url = "https://github.com/jarofghosts/clapchop"
- version = "0.2.0"
+ version = "0.3.0"
  description = "ergonomic sample chopper"
