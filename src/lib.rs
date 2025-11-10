@@ -106,6 +106,7 @@ impl Default for ClapChopParams {
                     factor: 0.5,
                 },
             )
+            .with_step_size(1.0)
             .with_unit(" BPM"),
             slice_algo: EnumParam::new("Slice Algorithm", SliceAlgorithm::Quarter),
             hold_continue: BoolParam::new("Hold Continue", true),

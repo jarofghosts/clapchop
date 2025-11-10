@@ -12,8 +12,8 @@ use crate::preset::{load_preset, save_preset, PresetData};
 use crate::slicing::SliceAlgorithm;
 use crate::{ClapChop, ClapChopParams, SharedState, UiPadEvent};
 
-pub const DEFAULT_EDITOR_WIDTH: u32 = 720;
-pub const DEFAULT_EDITOR_HEIGHT: u32 = 820;
+pub const DEFAULT_EDITOR_WIDTH: u32 = 850;
+pub const DEFAULT_EDITOR_HEIGHT: u32 = 1120;
 const PAD_WIDTH: f32 = 72.0;
 const PAD_HEIGHT: f32 = 64.0;
 const PAD_SPACING: f32 = 6.0;
@@ -25,8 +25,8 @@ pub struct GuiState {
     last_preset_path: Option<String>,
     preset_message: Option<String>,
     preset_error: Option<String>,
-	// Unscaled baseline style captured on first frame to avoid compounding scale.
-	base_style: Option<egui::Style>,
+    // Unscaled baseline style captured on first frame to avoid compounding scale.
+    base_style: Option<egui::Style>,
 }
 
 impl Default for GuiState {
@@ -38,7 +38,7 @@ impl Default for GuiState {
             last_preset_path: None,
             preset_message: None,
             preset_error: None,
-			base_style: None,
+            base_style: None,
         }
     }
 }
@@ -52,16 +52,16 @@ pub fn build_editor(
         GuiState::default(),
         |_ctx, _state| {},
         move |egui_ctx, setter, state| {
-			// Apply UI scale from persisted parameter by scaling the base style each frame.
-			let scale = (*params.ui_scale.read()).clamp(0.5, 3.0);
-			if state.base_style.is_none() {
-				state.base_style = Some(egui_ctx.style().as_ref().clone());
-			}
-			if let Some(base) = &state.base_style {
-				let mut styled = base.clone();
-				scale_style_in_place(&mut styled, scale);
-				egui_ctx.set_style(styled);
-			}
+            // Apply UI scale from persisted parameter by scaling the base style each frame.
+            let scale = (*params.ui_scale.read()).clamp(0.5, 3.0);
+            if state.base_style.is_none() {
+                state.base_style = Some(egui_ctx.style().as_ref().clone());
+            }
+            if let Some(base) = &state.base_style {
+                let mut styled = base.clone();
+                scale_style_in_place(&mut styled, scale);
+                egui_ctx.set_style(styled);
+            }
             let mut content_size = egui::Vec2::ZERO;
             let mut pad_count = 0usize;
             egui::CentralPanel::default().show(egui_ctx, |ui| {
@@ -96,14 +96,18 @@ pub fn build_editor(
                     state,
                     &shared,
                     params.starting_note.value() as u8,
-					scale,
+                    scale,
                     pad_count,
                 );
 
+                ui.separator();
                 status_section(ui, state, &shared);
+
+                // Force UI to complete layout before measuring
+                ui.ctx().request_repaint();
                 content_size = ui.min_rect().size();
             });
-			maybe_resize_editor(egui_ctx, &params.editor_state, content_size);
+            maybe_resize_editor(egui_ctx, &params.editor_state, content_size);
         },
     )
 }
@@ -210,13 +214,22 @@ fn parameter_row(
                 let set_scale = |val: f32| {
                     *params.ui_scale.write() = val;
                 };
-                if ui.selectable_label((current_scale - 1.0).abs() < 0.01, "100%").clicked() {
+                if ui
+                    .selectable_label((current_scale - 1.0).abs() < 0.01, "100%")
+                    .clicked()
+                {
                     set_scale(1.0);
                 }
-                if ui.selectable_label((current_scale - 1.5).abs() < 0.01, "150%").clicked() {
+                if ui
+                    .selectable_label((current_scale - 1.5).abs() < 0.01, "150%")
+                    .clicked()
+                {
                     set_scale(1.5);
                 }
-                if ui.selectable_label((current_scale - 2.0).abs() < 0.01, "200%").clicked() {
+                if ui
+                    .selectable_label((current_scale - 2.0).abs() < 0.01, "200%")
+                    .clicked()
+                {
                     set_scale(2.0);
                 }
             });
@@ -240,10 +253,8 @@ fn parameter_row(
 
         ui.separator();
         ui.label("BPM");
-		let scale = *params.ui_scale.read();
-		ui.add(
-			widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale),
-		);
+        let scale = *params.ui_scale.read();
+        ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
     });
 
     ui.horizontal(|ui| {
@@ -273,14 +284,18 @@ fn parameter_row(
             });
 
         let mut hold = params.hold_continue.value();
-        if ui.checkbox(&mut hold, "Hold beyond slice").changed() {
+        if ui.checkbox(&mut hold, "Hold beyond slice")
+            .on_hover_text("Continuing to hold the trigger button will continue playing sample past the chop point.")
+            .changed() {
             setter.begin_set_parameter(&params.hold_continue);
             setter.set_parameter(&params.hold_continue, hold);
             setter.end_set_parameter(&params.hold_continue);
         }
 
         let mut gate = params.gate_on_release.value();
-        if ui.checkbox(&mut gate, "Gate on release").changed() {
+        if ui.checkbox(&mut gate, "Gate on release")
+            .on_hover_text("Depressing the trigger button will stop sample playback before the chop endpoint.")
+            .changed() {
             setter.begin_set_parameter(&params.gate_on_release);
             setter.set_parameter(&params.gate_on_release, gate);
             setter.end_set_parameter(&params.gate_on_release);
@@ -429,13 +444,13 @@ fn maybe_resize_editor(
     editor_state: &Arc<EguiState>,
     content_size: egui::Vec2,
 ) {
-	if content_size == egui::Vec2::ZERO {
+    if content_size == egui::Vec2::ZERO {
         return;
     }
 
-	// Use logical points. The host expects logical sizes, not physical pixels.
-	let desired_width = content_size.x.ceil() as u32;
-	let desired_height = content_size.y.ceil() as u32;
+    // Use logical points. The host expects logical sizes, not physical pixels.
+    let desired_width = content_size.x.ceil() as u32;
+    let desired_height = (content_size.y + 25.0).ceil() as u32;
 
     let desired_width = desired_width.max(DEFAULT_EDITOR_WIDTH);
     let desired_height = desired_height.max(DEFAULT_EDITOR_HEIGHT);
@@ -444,7 +459,7 @@ fn maybe_resize_editor(
 
     let width_diff = desired.0.abs_diff(current.0);
     let height_diff = desired.1.abs_diff(current.1);
-    if width_diff <= 1 && height_diff <= 1 {
+    if width_diff <= 15 && height_diff <= 15 {
         return;
     }
 
@@ -472,7 +487,7 @@ fn pad_grid(
     state: &mut GuiState,
     shared: &Arc<RwLock<SharedState>>,
     start_note: u8,
-	scale: f32,
+    scale: f32,
     pad_count: usize,
 ) {
     let pad_count = pad_count.min(crate::MAX_PADS);
@@ -508,24 +523,24 @@ fn pad_grid(
     } else {
         (pad_count + cols - 1) / cols
     };
-	let pad_w = PAD_WIDTH * scale;
-	let pad_h = PAD_HEIGHT * scale;
-	let pad_spacing = PAD_SPACING * scale;
-	let grid_width = if pad_count == 0 {
-		pad_w
+    let pad_w = PAD_WIDTH * scale;
+    let pad_h = PAD_HEIGHT * scale;
+    let pad_spacing = PAD_SPACING * scale;
+    let grid_width = if pad_count == 0 {
+        pad_w
     } else {
-		cols as f32 * pad_w + pad_spacing * (cols.saturating_sub(1) as f32)
+        cols as f32 * pad_w + pad_spacing * (cols.saturating_sub(1) as f32)
     };
     let grid_height = if pad_count == 0 {
-		pad_h
+        pad_h
     } else {
-		rows as f32 * pad_h + pad_spacing * (rows.saturating_sub(1) as f32)
+        rows as f32 * pad_h + pad_spacing * (rows.saturating_sub(1) as f32)
     };
     ui.set_min_width(grid_width);
     ui.set_min_height(grid_height);
 
     egui::Grid::new("pad-grid")
-		.spacing(egui::vec2(pad_spacing, pad_spacing))
+        .spacing(egui::vec2(pad_spacing, pad_spacing))
         .show(ui, |ui| {
             for row in 0..rows {
                 let display_row = rows - 1 - row;
@@ -534,7 +549,7 @@ fn pad_grid(
                     if pad_index >= pad_count {
                         ui.add_enabled(
                             false,
-							egui::Button::new("").min_size(egui::vec2(pad_w, pad_h)),
+                            egui::Button::new("").min_size(egui::vec2(pad_w, pad_h)),
                         );
                         continue;
                     }
@@ -546,8 +561,7 @@ fn pad_grid(
                     let pad_active = state.pressed_pads[pad_index]
                         || visual_states.get(pad_index).copied().unwrap_or(false);
 
-                    let mut button =
-						egui::Button::new(label).min_size(egui::vec2(pad_w, pad_h));
+                    let mut button = egui::Button::new(label).min_size(egui::vec2(pad_w, pad_h));
                     if pad_active {
                         button = button.fill(egui::Color32::from_rgb(120, 180, 255));
                     }
@@ -603,16 +617,16 @@ fn pad_grid(
 }
 
 fn scale_style_in_place(style: &mut egui::Style, scale: f32) {
-	// Scale text sizes
-	for (_ts, font_id) in style.text_styles.iter_mut() {
-		font_id.size *= scale;
-	}
-	// Scale common spacing attributes
-	style.spacing.item_spacing *= scale;
-	style.spacing.button_padding *= scale;
-	style.spacing.window_margin *= scale;
-	style.spacing.indent *= scale;
-	style.spacing.interact_size *= scale;
+    // Scale text sizes
+    for (_ts, font_id) in style.text_styles.iter_mut() {
+        font_id.size *= scale;
+    }
+    // Scale common spacing attributes
+    style.spacing.item_spacing *= scale;
+    style.spacing.button_padding *= scale;
+    style.spacing.window_margin *= scale;
+    style.spacing.indent *= scale;
+    style.spacing.interact_size *= scale;
 }
 fn midi_note_name(note: u8) -> String {
     const NAMES: [&str; 12] = [
