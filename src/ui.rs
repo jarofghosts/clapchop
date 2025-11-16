@@ -133,11 +133,11 @@ fn sample_loader_row(
     let mut path_to_load: Option<String> = None;
 
     ui.horizontal(|ui| {
-        ui.label("Sample File:");
+        ui.label("sample file:");
         ui.text_edit_singleline(&mut state.file_input);
 
         let loading = shared.read().loading;
-        let load_button = ui.add_enabled(!loading, egui::Button::new("Load"));
+        let load_button = ui.add_enabled(!loading, egui::Button::new("load"));
         if load_button.clicked() {
             let path = state.file_input.trim().to_string();
             if !path.is_empty() {
@@ -145,17 +145,17 @@ fn sample_loader_row(
             }
         }
 
-        if ui.button("Re-slice").clicked() {
+        if ui.button("re-chop").clicked() {
             let mut guard = shared.write();
             guard.pending_reslice = true;
         }
 
         if ui
-            .add_enabled(!loading, egui::Button::new("Browse..."))
+            .add_enabled(!loading, egui::Button::new("browse..."))
             .clicked()
         {
             let mut dialog =
-                FileDialog::new().add_filter("Audio", &["wav", "aif", "aiff", "flac", "mp3"]);
+                FileDialog::new().add_filter("audio", &["wav", "aif", "aiff", "flac", "mp3"]);
 
             if let Some(initial) = state.last_loaded_path.as_deref().or_else(|| {
                 let trimmed = state.file_input.trim();
@@ -199,7 +199,7 @@ fn parameter_row(
     pad_count: usize,
 ) {
     ui.horizontal(|ui| {
-        ui.label("UI Scale");
+        ui.label("ui scale");
         let current_scale = *params.ui_scale.read();
         let current_label = if (current_scale - 2.0).abs() < 0.01 {
             "200%"
@@ -236,7 +236,7 @@ fn parameter_row(
     });
 
     ui.horizontal(|ui| {
-        ui.label("Starting Note");
+        ui.label("starting note");
         let mut start_note_value = params.starting_note.value();
         let slider_response = ui.add(
             egui::Slider::new(&mut start_note_value, 0..=119)
@@ -252,15 +252,15 @@ fn parameter_row(
         }
 
         ui.separator();
-        ui.label("BPM");
+        ui.label("bpm");
         let scale = *params.ui_scale.read();
         ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
     });
 
     ui.horizontal(|ui| {
-        ui.label("Pads");
+        ui.label("pads");
         let label = if pad_count == 0 {
-            "No slices".to_string()
+            "no chops".to_string()
         } else {
             format!("{pad_count} pad{}", if pad_count == 1 { "" } else { "s" })
         };
@@ -268,7 +268,7 @@ fn parameter_row(
     });
 
     ui.horizontal(|ui| {
-        ui.label("Slice Algorithm");
+        ui.label("chop algorithm");
         egui::ComboBox::from_id_salt("slice_algo_combo")
             .selected_text(params.slice_algo.value().label())
             .show_ui(ui, |ui| {
@@ -284,8 +284,8 @@ fn parameter_row(
             });
 
         let mut hold = params.hold_continue.value();
-        if ui.checkbox(&mut hold, "Hold beyond slice")
-            .on_hover_text("Continuing to hold the trigger button will continue playing sample past the chop point.")
+        if ui.checkbox(&mut hold, "hold beyond chop point")
+            .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop point.")
             .changed() {
             setter.begin_set_parameter(&params.hold_continue);
             setter.set_parameter(&params.hold_continue, hold);
@@ -293,8 +293,8 @@ fn parameter_row(
         }
 
         let mut gate = params.gate_on_release.value();
-        if ui.checkbox(&mut gate, "Gate on release")
-            .on_hover_text("Depressing the trigger button will stop sample playback before the chop endpoint.")
+        if ui.checkbox(&mut gate, "stop chop on release")
+            .on_hover_text("depressing the trigger button will stop sample playback before the chop endpoint.")
             .changed() {
             setter.begin_set_parameter(&params.gate_on_release);
             setter.set_parameter(&params.gate_on_release, gate);
@@ -311,8 +311,8 @@ fn preset_row(
     shared: &Arc<RwLock<SharedState>>,
 ) {
     ui.horizontal(|ui| {
-        if ui.button("Save Preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("clapchop Preset", &["json", "clapchop"]);
+        if ui.button("save preset").clicked() {
+            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
 
             if let Some(initial) = preset_dialog_initial_path(state) {
                 if initial.is_dir() {
@@ -328,7 +328,7 @@ fn preset_row(
                 match save_preset(path.as_path(), params.as_ref(), shared.as_ref()) {
                     Ok(_) => {
                         state.preset_message =
-                            Some(format!("Preset saved to {}", path.to_string_lossy()));
+                            Some(format!("preset saved to {}", path.to_string_lossy()));
                         state.preset_error = None;
                         state.last_preset_path = Some(path.to_string_lossy().into_owned());
                     }
@@ -340,8 +340,8 @@ fn preset_row(
             }
         }
 
-        if ui.button("Load Preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("clapchop Preset", &["json", "clapchop"]);
+        if ui.button("load preset").clicked() {
+            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
 
             if let Some(initial) = preset_dialog_initial_path(state) {
                 if initial.is_dir() {
@@ -359,7 +359,7 @@ fn preset_row(
                             state.preset_message = None;
                         } else {
                             state.preset_message =
-                                Some(format!("Preset loaded from {}", path.to_string_lossy()));
+                                Some(format!("preset loaded from {}", path.to_string_lossy()));
                             state.preset_error = None;
                             state.last_preset_path = Some(path.to_string_lossy().into_owned());
                         }
@@ -571,7 +571,7 @@ fn pad_grid(
                     if response.hovered() {
                         if let Some((start, end)) = slice_info {
                             let frames = end.saturating_sub(start);
-                            response.clone().on_hover_text(format!("Frames: {frames}"));
+                            response.clone().on_hover_text(format!("frames: {frames}"));
                         }
                     }
 
@@ -630,7 +630,7 @@ fn scale_style_in_place(style: &mut egui::Style, scale: f32) {
 }
 fn midi_note_name(note: u8) -> String {
     const NAMES: [&str; 12] = [
-        "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
+        "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b",
     ];
     let octave = (note as i32 / 12) - 1;
     let name = NAMES[(note % 12) as usize];
@@ -643,27 +643,27 @@ fn status_section(ui: &mut egui::Ui, state: &GuiState, shared: &Arc<RwLock<Share
     }
 
     if let Some(error) = &state.preset_error {
-        ui.colored_label(egui::Color32::RED, format!("Preset error: {error}"));
+        ui.colored_label(egui::Color32::RED, format!("preset error: {error}"));
     }
 
     let shared = shared.read();
 
     if shared.loading {
-        ui.label(egui::RichText::new("Loading sample...").italics());
+        ui.label(egui::RichText::new("loading sample...").italics());
     }
 
     if let Some(error) = &shared.last_error {
-        ui.colored_label(egui::Color32::RED, format!("Error: {error}"));
+        ui.colored_label(egui::Color32::RED, format!("error: {error}"));
     }
 
     if let Some(sample) = shared.sample.as_ref() {
         ui.label(format!(
-            "Loaded sample: {} Hz, {} frames, {}",
+            "loaded sample: {} Hz, {} frames, {}",
             sample.sample_rate,
             sample.num_frames,
             if sample.stereo { "stereo" } else { "mono" }
         ));
     } else {
-        ui.label("No sample loaded.");
+        ui.label("no sample loaded :(");
     }
 }

@@ -17,12 +17,18 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 
 ## options
 
-- "Hold beyond slice"
-  - continuing to hold the trigger button will continue playing sample past the chop point.
-- "Gate on release"
+### sampling
+
+- "hold beyond chop point"
+  - continuing to hold the trigger button will continue playing sample past the chop enenddpoint.
+- "stop chop on release"
   - depressing the trigger button will stop sample playback before the chop endpoint.
 
 these options are both enabled by default, which makes sample playback naturally follow button presses.
+
+## why?
+
+i could not find a free plugin for sample chopping that supported the triggering options that i wanted and worked on linux, so this is that.
 
 ## development
 
