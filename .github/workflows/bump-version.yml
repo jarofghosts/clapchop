@@ -42,8 +42,8 @@ jobs:
 
       - name: Update Cargo.toml
         run: |
-          toml set Cargo.toml package.version ${{ steps.bump_version.outputs.new_version }} --in-place
-          toml set Cargo.toml package.metadata.nih-plug.clap.version ${{ steps.bump_version.outputs.new_version }} --in-place
+          toml set Cargo.toml package.version ${{ steps.bump_version.outputs.new_version }} > temp_cargo.toml && mv temp_cargo.toml Cargo.toml
+          toml set Cargo.toml package.metadata.nih-plug.clap.version ${{ steps.bump_version.outputs.new_version }} > temp_cargo.toml && mv temp_cargo.toml Cargo.toml
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
