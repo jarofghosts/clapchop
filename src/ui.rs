@@ -261,8 +261,11 @@ fn preset_row(
             }
         }
 
-        if ui.button("save preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
+        let sample_loaded = shared.read().sample.is_some();
+        let save_button = ui.add_enabled(sample_loaded, egui::Button::new("save preset"));
+
+        if save_button.clicked() {
+            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["clapchop.json"]);
 
             if let Some(initial) = preset_dialog_initial_path(state) {
                 if initial.is_dir() {
@@ -272,7 +275,26 @@ fn preset_row(
                 }
             }
 
-            dialog = dialog.set_file_name("clapchop_preset.json");
+            // Generate default filename based on currently loaded preset or sample name
+            let default_filename = if let Some(ref preset_path) = state.last_preset_path {
+                // Use current preset name if available
+                Path::new(preset_path)
+                    .file_stem()
+                    .and_then(|stem| stem.to_str())
+                    .map(|name| format!("{}.json", name))
+                    .unwrap_or_else(|| "default.clapchop.json".to_string())
+            } else if let Some(ref sample_path) = shared.read().loaded_path {
+                // Use current sample name with .clapchop.json extension
+                Path::new(sample_path)
+                    .file_stem()
+                    .and_then(|stem| stem.to_str())
+                    .map(|name| format!("{}.clapchop.json", name))
+                    .unwrap_or_else(|| "default.clapchop.json".to_string())
+            } else {
+                "default.clapchop.json".to_string()
+            };
+
+            dialog = dialog.set_file_name(&default_filename);
 
             if let Some(path) = dialog.save_file() {
                 match save_preset(path.as_path(), params.as_ref(), shared.as_ref()) {
