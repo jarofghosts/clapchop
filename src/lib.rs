@@ -80,9 +80,6 @@ pub struct ClapChopParams {
 
     #[id = "gate"]
     pub gate_on_release: BoolParam,
-
-    #[id = "pads"]
-    pub num_pads: IntParam,
 }
 
 impl Default for ClapChopParams {
@@ -92,12 +89,12 @@ impl Default for ClapChopParams {
             last_sample_path: Arc::new(RwLock::new(None)),
             ui_scale: Arc::new(RwLock::new(1.0)),
             starting_note: IntParam::new(
-                "Starting MIDI Note",
+                "starting note",
                 36,
                 IntRange::Linear { min: 0, max: 119 },
             ),
             bpm: FloatParam::new(
-                "Sample BPM",
+                "bpm",
                 120.0,
                 FloatRange::SymmetricalSkewed {
                     min: 40.0,
@@ -108,17 +105,9 @@ impl Default for ClapChopParams {
             )
             .with_step_size(1.0)
             .with_unit(" BPM"),
-            slice_algo: EnumParam::new("Slice Algorithm", SliceAlgorithm::Quarter),
-            hold_continue: BoolParam::new("Hold Continue", true),
-            gate_on_release: BoolParam::new("Gate Playback", true),
-            num_pads: IntParam::new(
-                "Number of Pads",
-                16,
-                IntRange::Linear {
-                    min: MIN_PADS as i32,
-                    max: MAX_PADS as i32,
-                },
-            ),
+            slice_algo: EnumParam::new("slice algorithm", SliceAlgorithm::Quarter),
+            hold_continue: BoolParam::new("hold beyond chop", true),
+            gate_on_release: BoolParam::new("stop chop on release", true),
         }
     }
 }
@@ -537,7 +526,7 @@ impl ClapChop {
 
 impl ClapPlugin for ClapChop {
     const CLAP_ID: &'static str = "com.clapchop.sampler";
-    const CLAP_DESCRIPTION: Option<&'static str> = Some("Beat slicing sampler mapped to pads");
+    const CLAP_DESCRIPTION: Option<&'static str> = Some("ergonomic sample chopper");
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::EMAIL);
     const CLAP_FEATURES: &'static [ClapFeature] = &[
