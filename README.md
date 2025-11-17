@@ -17,29 +17,25 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 
 ## options
 
-### sampling
-
-#### chop algorithm
+### chop algorithm
 
 how to chop the sample (e.g. by 1/4 notes, 120 bpm)
 
-#### starting notes
+### starting notes
 
 sets the starting midi note for the pads
 
-#### hold beyond chop point
+### hold beyond chop point
 
 continuing to hold the trigger button will continue playing sample past the chop enenddpoint.
 
-### ui
-
-#### ui scale
-
-sets the size of the text and buttons etc.
-
-#### stop chop on release
+### stop chop on release
 
 depressing the trigger button will stop sample playback before the chop endpoint.
+
+### ui scale
+
+sets the size of the text and buttons etc.
 
 ## why?
 
