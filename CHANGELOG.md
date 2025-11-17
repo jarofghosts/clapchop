@@ -1,3 +1,7 @@
+# 1.0.0
+
+- Rearranged UI
+
 # 0.3.0
 
 - Fixed window sizing
