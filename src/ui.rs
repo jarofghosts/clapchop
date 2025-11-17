@@ -19,7 +19,6 @@ const PAD_HEIGHT: f32 = 64.0;
 const PAD_SPACING: f32 = 6.0;
 
 pub struct GuiState {
-    pub file_input: String,
     last_loaded_path: Option<String>,
     pressed_pads: Vec<bool>,
     last_preset_path: Option<String>,
@@ -32,7 +31,6 @@ pub struct GuiState {
 impl Default for GuiState {
     fn default() -> Self {
         Self {
-            file_input: String::new(),
             last_loaded_path: None,
             pressed_pads: vec![false; crate::MAX_PADS],
             last_preset_path: None,
@@ -72,6 +70,11 @@ pub fn build_editor(
 
                 sample_loader_row(ui, state, &params, &shared);
                 ui.separator();
+                preset_row(ui, state, setter, &params, &shared);
+                ui.separator();
+
+                parameter_row(ui, setter, &params);
+                ui.separator();
 
                 pad_count = {
                     let shared_guard = shared.read();
@@ -85,11 +88,6 @@ pub fn build_editor(
                     setter.end_set_parameter(&params.num_pads);
                 }
 
-                parameter_row(ui, setter, &params, pad_count);
-
-                ui.separator();
-                preset_row(ui, state, setter, &params, &shared);
-
                 ui.separator();
                 pad_grid(
                     ui,
@@ -101,7 +99,7 @@ pub fn build_editor(
                 );
 
                 ui.separator();
-                status_section(ui, state, &shared);
+                status_section(ui, state, &shared, &params);
 
                 // Force UI to complete layout before measuring
                 ui.ctx().request_repaint();
@@ -116,9 +114,6 @@ fn sync_gui_state(state: &mut GuiState, shared: &Arc<RwLock<SharedState>>) {
     let shared = shared.read();
     if let Some(path) = &shared.loaded_path {
         if state.last_loaded_path.as_ref() != Some(path) {
-            if state.file_input.is_empty() {
-                state.file_input = path.clone();
-            }
             state.last_loaded_path = Some(path.clone());
         }
     }
@@ -133,38 +128,16 @@ fn sample_loader_row(
     let mut path_to_load: Option<String> = None;
 
     ui.horizontal(|ui| {
-        ui.label("sample file:");
-        ui.text_edit_singleline(&mut state.file_input);
-
         let loading = shared.read().loading;
-        let load_button = ui.add_enabled(!loading, egui::Button::new("load"));
-        if load_button.clicked() {
-            let path = state.file_input.trim().to_string();
-            if !path.is_empty() {
-                ClapChop::request_sample_load(path, params.clone(), shared.clone());
-            }
-        }
-
-        if ui.button("re-chop").clicked() {
-            let mut guard = shared.write();
-            guard.pending_reslice = true;
-        }
 
         if ui
-            .add_enabled(!loading, egui::Button::new("browse..."))
+            .add_enabled(!loading, egui::Button::new("load sample..."))
             .clicked()
         {
             let mut dialog =
                 FileDialog::new().add_filter("audio", &["wav", "aif", "aiff", "flac", "mp3"]);
 
-            if let Some(initial) = state.last_loaded_path.as_deref().or_else(|| {
-                let trimmed = state.file_input.trim();
-                if trimmed.is_empty() {
-                    None
-                } else {
-                    Some(trimmed)
-                }
-            }) {
+            if let Some(initial) = state.last_loaded_path.as_deref() {
                 let initial_path = Path::new(initial);
                 if initial_path.is_dir() {
                     dialog = dialog.set_directory(initial_path.to_path_buf());
@@ -180,7 +153,6 @@ fn sample_loader_row(
 
             if let Some(file) = dialog.pick_file() {
                 let path_string = file.to_string_lossy().into_owned();
-                state.file_input = path_string.clone();
                 state.last_loaded_path = Some(path_string.clone());
                 path_to_load = Some(path_string);
             }
@@ -192,50 +164,8 @@ fn sample_loader_row(
     }
 }
 
-fn parameter_row(
-    ui: &mut egui::Ui,
-    setter: &ParamSetter,
-    params: &Arc<ClapChopParams>,
-    pad_count: usize,
-) {
-    ui.horizontal(|ui| {
-        ui.label("ui scale");
-        let current_scale = *params.ui_scale.read();
-        let current_label = if (current_scale - 2.0).abs() < 0.01 {
-            "200%"
-        } else if (current_scale - 1.5).abs() < 0.01 {
-            "150%"
-        } else {
-            "100%"
-        };
-        egui::ComboBox::from_id_salt("ui_scale_combo")
-            .selected_text(current_label)
-            .show_ui(ui, |ui| {
-                let set_scale = |val: f32| {
-                    *params.ui_scale.write() = val;
-                };
-                if ui
-                    .selectable_label((current_scale - 1.0).abs() < 0.01, "100%")
-                    .clicked()
-                {
-                    set_scale(1.0);
-                }
-                if ui
-                    .selectable_label((current_scale - 1.5).abs() < 0.01, "150%")
-                    .clicked()
-                {
-                    set_scale(1.5);
-                }
-                if ui
-                    .selectable_label((current_scale - 2.0).abs() < 0.01, "200%")
-                    .clicked()
-                {
-                    set_scale(2.0);
-                }
-            });
-    });
-
-    ui.horizontal(|ui| {
+fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopParams>) {
+    ui.vertical(|ui| {
         ui.label("starting note");
         let mut start_note_value = params.starting_note.value();
         let slider_response = ui.add(
@@ -251,20 +181,23 @@ fn parameter_row(
             setter.end_set_parameter(&params.starting_note);
         }
 
-        ui.separator();
-        ui.label("bpm");
-        let scale = *params.ui_scale.read();
-        ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
-    });
+        let mut hold = params.hold_continue.value();
+        if ui.checkbox(&mut hold, "hold beyond chop point")
+            .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop endpoint.")
+            .changed() {
+            setter.begin_set_parameter(&params.hold_continue);
+            setter.set_parameter(&params.hold_continue, hold);
+            setter.end_set_parameter(&params.hold_continue);
+        }
 
-    ui.horizontal(|ui| {
-        ui.label("pads");
-        let label = if pad_count == 0 {
-            "no chops".to_string()
-        } else {
-            format!("{pad_count} pad{}", if pad_count == 1 { "" } else { "s" })
-        };
-        ui.label(label);
+        let mut gate = params.gate_on_release.value();
+        if ui.checkbox(&mut gate, "stop chop on release")
+            .on_hover_text("depressing the trigger button will stop sample playback before the chop endpoint.")
+            .changed() {
+            setter.begin_set_parameter(&params.gate_on_release);
+            setter.set_parameter(&params.gate_on_release, gate);
+            setter.end_set_parameter(&params.gate_on_release);
+        }
     });
 
     ui.horizontal(|ui| {
@@ -283,23 +216,10 @@ fn parameter_row(
                 }
             });
 
-        let mut hold = params.hold_continue.value();
-        if ui.checkbox(&mut hold, "hold beyond chop point")
-            .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop point.")
-            .changed() {
-            setter.begin_set_parameter(&params.hold_continue);
-            setter.set_parameter(&params.hold_continue, hold);
-            setter.end_set_parameter(&params.hold_continue);
-        }
-
-        let mut gate = params.gate_on_release.value();
-        if ui.checkbox(&mut gate, "stop chop on release")
-            .on_hover_text("depressing the trigger button will stop sample playback before the chop endpoint.")
-            .changed() {
-            setter.begin_set_parameter(&params.gate_on_release);
-            setter.set_parameter(&params.gate_on_release, gate);
-            setter.end_set_parameter(&params.gate_on_release);
-        }
+        ui.separator();
+        ui.label("bpm");
+        let scale = *params.ui_scale.read();
+        ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
     });
 }
 
@@ -311,35 +231,6 @@ fn preset_row(
     shared: &Arc<RwLock<SharedState>>,
 ) {
     ui.horizontal(|ui| {
-        if ui.button("save preset").clicked() {
-            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
-
-            if let Some(initial) = preset_dialog_initial_path(state) {
-                if initial.is_dir() {
-                    dialog = dialog.set_directory(initial);
-                } else if let Some(parent) = initial.parent() {
-                    dialog = dialog.set_directory(parent.to_path_buf());
-                }
-            }
-
-            dialog = dialog.set_file_name("clapchop_preset.json");
-
-            if let Some(path) = dialog.save_file() {
-                match save_preset(path.as_path(), params.as_ref(), shared.as_ref()) {
-                    Ok(_) => {
-                        state.preset_message =
-                            Some(format!("preset saved to {}", path.to_string_lossy()));
-                        state.preset_error = None;
-                        state.last_preset_path = Some(path.to_string_lossy().into_owned());
-                    }
-                    Err(err) => {
-                        state.preset_error = Some(err);
-                        state.preset_message = None;
-                    }
-                }
-            }
-        }
-
         if ui.button("load preset").clicked() {
             let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
 
@@ -363,6 +254,35 @@ fn preset_row(
                             state.preset_error = None;
                             state.last_preset_path = Some(path.to_string_lossy().into_owned());
                         }
+                    }
+                    Err(err) => {
+                        state.preset_error = Some(err);
+                        state.preset_message = None;
+                    }
+                }
+            }
+        }
+
+        if ui.button("save preset").clicked() {
+            let mut dialog = FileDialog::new().add_filter("clapchop preset", &["json", "clapchop"]);
+
+            if let Some(initial) = preset_dialog_initial_path(state) {
+                if initial.is_dir() {
+                    dialog = dialog.set_directory(initial);
+                } else if let Some(parent) = initial.parent() {
+                    dialog = dialog.set_directory(parent.to_path_buf());
+                }
+            }
+
+            dialog = dialog.set_file_name("clapchop_preset.json");
+
+            if let Some(path) = dialog.save_file() {
+                match save_preset(path.as_path(), params.as_ref(), shared.as_ref()) {
+                    Ok(_) => {
+                        state.preset_message =
+                            Some(format!("preset saved to {}", path.to_string_lossy()));
+                        state.preset_error = None;
+                        state.last_preset_path = Some(path.to_string_lossy().into_owned());
                     }
                     Err(err) => {
                         state.preset_error = Some(err);
@@ -404,12 +324,10 @@ fn apply_preset(
     if let Some(path) = preset.sample_path.as_ref() {
         let path_string = path.to_string_lossy().into_owned();
         if !path_string.is_empty() {
-            state.file_input = path_string.clone();
             state.last_loaded_path = Some(path_string.clone());
             ClapChop::request_sample_load(path_string, params.clone(), shared.clone());
         }
     } else {
-        state.file_input.clear();
         state.last_loaded_path = None;
     }
 
@@ -421,14 +339,6 @@ fn preset_dialog_initial_path(state: &GuiState) -> Option<PathBuf> {
         .last_preset_path
         .as_deref()
         .or(state.last_loaded_path.as_deref())
-        .or_else(|| {
-            let trimmed = state.file_input.trim();
-            if trimmed.is_empty() {
-                None
-            } else {
-                Some(trimmed)
-            }
-        })
         .map(PathBuf::from)
 }
 
@@ -637,7 +547,12 @@ fn midi_note_name(note: u8) -> String {
     format!("{}{}", name, octave)
 }
 
-fn status_section(ui: &mut egui::Ui, state: &GuiState, shared: &Arc<RwLock<SharedState>>) {
+fn status_section(
+    ui: &mut egui::Ui,
+    state: &GuiState,
+    shared: &Arc<RwLock<SharedState>>,
+    params: &Arc<ClapChopParams>,
+) {
     if let Some(message) = &state.preset_message {
         ui.colored_label(egui::Color32::from_rgb(100, 200, 140), message);
     }
@@ -657,8 +572,16 @@ fn status_section(ui: &mut egui::Ui, state: &GuiState, shared: &Arc<RwLock<Share
     }
 
     if let Some(sample) = shared.sample.as_ref() {
+        let filename = shared
+            .loaded_path
+            .as_ref()
+            .and_then(|path| std::path::Path::new(path).file_name())
+            .and_then(|name| name.to_str())
+            .unwrap_or("unknown");
+
         ui.label(format!(
-            "loaded sample: {} Hz, {} frames, {}",
+            "loaded: {} ({} Hz, {} frames, {})",
+            filename,
             sample.sample_rate,
             sample.num_frames,
             if sample.stereo { "stereo" } else { "mono" }
@@ -666,4 +589,44 @@ fn status_section(ui: &mut egui::Ui, state: &GuiState, shared: &Arc<RwLock<Share
     } else {
         ui.label("no sample loaded :(");
     }
+
+    ui.separator();
+
+    // UI Scale selector
+    ui.horizontal(|ui| {
+        ui.label("ui scale:");
+        let current_scale = *params.ui_scale.read();
+        let current_label = if (current_scale - 2.0).abs() < 0.01 {
+            "200%"
+        } else if (current_scale - 1.5).abs() < 0.01 {
+            "150%"
+        } else {
+            "100%"
+        };
+        egui::ComboBox::from_id_salt("ui_scale_combo")
+            .selected_text(current_label)
+            .show_ui(ui, |ui| {
+                let set_scale = |val: f32| {
+                    *params.ui_scale.write() = val;
+                };
+                if ui
+                    .selectable_label((current_scale - 1.0).abs() < 0.01, "100%")
+                    .clicked()
+                {
+                    set_scale(1.0);
+                }
+                if ui
+                    .selectable_label((current_scale - 1.5).abs() < 0.01, "150%")
+                    .clicked()
+                {
+                    set_scale(1.5);
+                }
+                if ui
+                    .selectable_label((current_scale - 2.0).abs() < 0.01, "200%")
+                    .clicked()
+                {
+                    set_scale(2.0);
+                }
+            });
+    });
 }
