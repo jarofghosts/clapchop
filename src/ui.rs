@@ -78,12 +78,6 @@ pub fn build_editor(
                 };
                 pad_count = pad_count.min(crate::MAX_PADS);
 
-                if params.num_pads.value() != pad_count as i32 {
-                    setter.begin_set_parameter(&params.num_pads);
-                    setter.set_parameter(&params.num_pads, pad_count as i32);
-                    setter.end_set_parameter(&params.num_pads);
-                }
-
                 pad_grid(
                     ui,
                     state,

@@ -13,7 +13,6 @@ mod ui;
 use sample::{LoadedSample, SamplePlayer};
 use slicing::{SliceAlgorithm, Slices};
 
-const MIN_PADS: usize = 0;
 pub const MAX_PADS: usize = 64;
 
 #[derive(Clone)]
