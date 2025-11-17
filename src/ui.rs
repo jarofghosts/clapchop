@@ -66,15 +66,11 @@ pub fn build_editor(
                 sync_gui_state(state, &shared);
 
                 ui.heading("clapchop");
-                ui.separator();
 
                 sample_loader_row(ui, state, &params, &shared);
                 ui.separator();
-                preset_row(ui, state, setter, &params, &shared);
-                ui.separator();
 
                 parameter_row(ui, setter, &params);
-                ui.separator();
 
                 pad_count = {
                     let shared_guard = shared.read();
@@ -88,7 +84,6 @@ pub fn build_editor(
                     setter.end_set_parameter(&params.num_pads);
                 }
 
-                ui.separator();
                 pad_grid(
                     ui,
                     state,
@@ -100,6 +95,8 @@ pub fn build_editor(
 
                 ui.separator();
                 status_section(ui, state, &shared, &params);
+                ui.separator();
+                preset_row(ui, state, setter, &params, &shared);
 
                 // Force UI to complete layout before measuring
                 ui.ctx().request_repaint();
@@ -166,20 +163,43 @@ fn sample_loader_row(
 
 fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopParams>) {
     ui.vertical(|ui| {
-        ui.label("starting note");
-        let mut start_note_value = params.starting_note.value();
-        let slider_response = ui.add(
-            egui::Slider::new(&mut start_note_value, 0..=119)
-                .clamping(egui::SliderClamping::Always)
-                .text(""),
-        );
-        let note_name = midi_note_name(start_note_value as u8);
-        ui.monospace(note_name);
-        if slider_response.changed() {
-            setter.begin_set_parameter(&params.starting_note);
-            setter.set_parameter(&params.starting_note, start_note_value);
-            setter.end_set_parameter(&params.starting_note);
-        }
+        ui.horizontal(|ui| {
+            ui.label("chop algorithm");
+            egui::ComboBox::from_id_salt("slice_algo_combo")
+                .selected_text(params.slice_algo.value().label())
+                .show_ui(ui, |ui| {
+                    for (idx, variant_name) in SliceAlgorithm::variants().iter().enumerate() {
+                        let variant = SliceAlgorithm::from_index(idx);
+                        let selected = params.slice_algo.value() == variant;
+                        if ui.selectable_label(selected, *variant_name).clicked() {
+                            setter.begin_set_parameter(&params.slice_algo);
+                            setter.set_parameter(&params.slice_algo, variant);
+                            setter.end_set_parameter(&params.slice_algo);
+                        }
+                    }
+                });
+
+            ui.separator();
+            ui.label("bpm");
+            let scale = *params.ui_scale.read();
+            ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
+        });
+        ui.horizontal(|ui| {
+                ui.label("starting note");
+                let mut start_note_value = params.starting_note.value();
+                let slider_response = ui.add(
+                    egui::Slider::new(&mut start_note_value, 0..=119)
+                        .clamping(egui::SliderClamping::Always)
+                        .text(""),
+                );
+                let note_name = midi_note_name(start_note_value as u8);
+                ui.monospace(note_name);
+                if slider_response.changed() {
+                    setter.begin_set_parameter(&params.starting_note);
+                    setter.set_parameter(&params.starting_note, start_note_value);
+                    setter.end_set_parameter(&params.starting_note);
+                }
+            });
 
         let mut hold = params.hold_continue.value();
         if ui.checkbox(&mut hold, "hold beyond chop point")
@@ -198,28 +218,6 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
             setter.set_parameter(&params.gate_on_release, gate);
             setter.end_set_parameter(&params.gate_on_release);
         }
-    });
-
-    ui.horizontal(|ui| {
-        ui.label("chop algorithm");
-        egui::ComboBox::from_id_salt("slice_algo_combo")
-            .selected_text(params.slice_algo.value().label())
-            .show_ui(ui, |ui| {
-                for (idx, variant_name) in SliceAlgorithm::variants().iter().enumerate() {
-                    let variant = SliceAlgorithm::from_index(idx);
-                    let selected = params.slice_algo.value() == variant;
-                    if ui.selectable_label(selected, *variant_name).clicked() {
-                        setter.begin_set_parameter(&params.slice_algo);
-                        setter.set_parameter(&params.slice_algo, variant);
-                        setter.end_set_parameter(&params.slice_algo);
-                    }
-                }
-            });
-
-        ui.separator();
-        ui.label("bpm");
-        let scale = *params.ui_scale.read();
-        ui.add(widgets::ParamSlider::for_param(&params.bpm, setter).with_width(160.0 * scale));
     });
 }
 
