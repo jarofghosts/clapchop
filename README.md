@@ -7,7 +7,7 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 ## installation
 
 - grab the latest `.clap` file release from [GitHub](https://github.com/jarofghosts/clapchop/releases)
-- copy or symlink the plugin to your CLAP plug-ins folder (e.g., `~/.clap/`).
+- copy or symlink the plugin to your CLAP plug-ins folder (e.g. `~/.clap/`).
 
 ## usage
 
@@ -19,12 +19,27 @@ ergonomic sample chopping in a [CLAP plugin](https://cleveraudio.org/)
 
 ### sampling
 
-- "hold beyond chop point"
-  - continuing to hold the trigger button will continue playing sample past the chop enenddpoint.
-- "stop chop on release"
-  - depressing the trigger button will stop sample playback before the chop endpoint.
+#### chop algorithm
 
-these options are both enabled by default, which makes sample playback naturally follow button presses.
+how to chop the sample (e.g. by 1/4 notes, 120 bpm)
+
+#### starting notes
+
+sets the starting midi note for the pads
+
+#### hold beyond chop point
+
+continuing to hold the trigger button will continue playing sample past the chop enenddpoint.
+
+### ui
+
+#### ui scale
+
+sets the size of the text and buttons etc.
+
+#### stop chop on release
+
+depressing the trigger button will stop sample playback before the chop endpoint.
 
 ## why?
 
@@ -37,8 +52,8 @@ cargo run --package xtask -- bundle clapchop --release
 ```
 
 - the bundler produces a `.clap` bundle at `target/bundled/clapchop.clap`.
-- copy or symlink the plugin to your CLAP plug-ins folder (e.g., `~/.clap/`).
+- copy or symlink the plugin to your CLAP plug-ins folder (e.g. `~/.clap/`).
 
-### license
+## license
 
 MIT
