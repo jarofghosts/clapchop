@@ -27,7 +27,7 @@ sets the starting midi note for the pads
 
 ### hold beyond chop point
 
-continuing to hold the trigger button will continue playing sample past the chop enenddpoint.
+continuing to hold the trigger button will continue playing sample past the chop endpoint.
 
 ### stop chop on release
 
