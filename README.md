@@ -45,6 +45,14 @@ controls the pitch offset in semitones (-24 to +24, default 0). positive values 
 
 automatically trims silent portions from the start and end of the sample when loading. uses a threshold of approximately -60 db to detect silence.
 
+### pad chop MIDI channel
+
+sets which MIDI channel (1-16) to listen to for pad chop triggering. set to "All" (default) to listen to all MIDI channels. useful when you want to separate pad triggers from other MIDI input.
+
+### pitch reference MIDI channel
+
+sets which MIDI channel (1-16) to listen to for reference pitch updates. when a note is received on this channel, the pitch parameter is automatically updated based on the semitone difference from the starting note. for example, if the starting note is C2 and the channel receives C#2, the pitch parameter will be updated to +1 semitone. set to "Off" (default) to disable pitch reference updates.
+
 ### ui scale
 
 sets the size of the text and buttons etc.

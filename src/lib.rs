@@ -93,6 +93,14 @@ pub struct ClapChopParams {
 
     #[id = "trimsilence"]
     pub trim_silence: BoolParam,
+
+    /// MIDI channel (0-15) to listen to for pad chop triggering. Set to 16 to listen to all channels.
+    #[id = "padchopchannel"]
+    pub pad_chop_channel: IntParam,
+
+    /// MIDI channel (0-15) to listen to for reference pitch updates. Set to 16 to disable pitch reference updates.
+    #[id = "pitchrefchannel"]
+    pub pitch_reference_channel: IntParam,
 }
 
 impl Default for ClapChopParams {
@@ -135,6 +143,16 @@ impl Default for ClapChopParams {
             )
             .with_unit(" st"),
             trim_silence: BoolParam::new("trim silence", false),
+            pad_chop_channel: IntParam::new(
+                "pad chop channel",
+                16, // 16 = all channels (backward compatibility)
+                IntRange::Linear { min: 0, max: 16 },
+            ),
+            pitch_reference_channel: IntParam::new(
+                "pitch reference channel",
+                16, // 16 = disabled
+                IntRange::Linear { min: 0, max: 16 },
+            ),
         }
     }
 }
@@ -150,6 +168,7 @@ pub struct ClapChop {
     last_num_pads: usize,
     last_playback_speed: f32,
     last_pitch_semitones: i32,
+    last_pitch_param_value: i32, // Track last parameter value to detect user changes
     persisted_path_seen: Option<String>,
 }
 
@@ -175,6 +194,7 @@ impl Default for ClapChop {
             last_num_pads: Self::default_num_pads(),
             last_playback_speed: 100.0,
             last_pitch_semitones: 0,
+            last_pitch_param_value: 0,
             persisted_path_seen: None,
         }
     }
@@ -218,6 +238,7 @@ impl Plugin for ClapChop {
         self.last_algo = self.params.slice_algo.value();
         self.last_playback_speed = self.params.playback_speed.value();
         self.last_pitch_semitones = self.params.pitch_semitones.value();
+        self.last_pitch_param_value = self.params.pitch_semitones.value();
         self.player.set_playback_speed(self.last_playback_speed);
         self.player.set_pitch_semitones(self.last_pitch_semitones);
         let desired = {
@@ -250,9 +271,9 @@ impl Plugin for ClapChop {
         self.sync_shared_state();
         self.sync_num_pads();
         self.sync_playback_speed();
-        self.sync_pitch_semitones();
         self.handle_reslice_requests();
         self.handle_midi(context);
+        self.sync_pitch_semitones();
         self.handle_ui_events();
         self.render_audio(buffer);
 
@@ -379,23 +400,46 @@ impl ClapChop {
             return;
         }
         let num_pads_u8 = num_pads.min(u8::MAX as usize) as u8;
+        let pad_chop_channel = self.params.pad_chop_channel.value() as u8;
+        let pitch_ref_channel = self.params.pitch_reference_channel.value() as u8;
 
         while let Some(event) = context.next_event() {
             match event {
-                NoteEvent::NoteOn { note, velocity, .. } => {
-                    if note >= start_note && (note - start_note) < num_pads_u8 {
-                        let pad_index = (note - start_note) as usize;
-                        let hold = self.params.hold_continue.value();
-                        let gate = self.params.gate_on_release.value();
-                        self.player.note_on(pad_index, velocity, hold, gate);
-                        self.set_pad_visual(pad_index, true);
+                NoteEvent::NoteOn { note, velocity, channel, .. } => {
+                    let event_channel = channel as u8;
+
+                    // Handle pad chop triggering
+                    if pad_chop_channel == 16 || event_channel == pad_chop_channel {
+                        if note >= start_note && (note - start_note) < num_pads_u8 {
+                            let pad_index = (note - start_note) as usize;
+                            let hold = self.params.hold_continue.value();
+                            let gate = self.params.gate_on_release.value();
+                            self.player.note_on(pad_index, velocity, hold, gate);
+                            self.set_pad_visual(pad_index, true);
+                        }
+                    }
+
+                    // Handle pitch reference updates
+                    if pitch_ref_channel != 16 && event_channel == pitch_ref_channel {
+                        // Calculate semitone difference between incoming note and starting note (reference)
+                        let semitone_diff = note as i32 - start_note as i32;
+                        // Clamp to valid range
+                        let clamped_pitch = semitone_diff.max(-24).min(24);
+                        // Store the pitch update (will be applied in sync_pitch_semitones)
+                        self.last_pitch_semitones = clamped_pitch;
+                        // Update player directly for immediate effect
+                        self.player.set_pitch_semitones(clamped_pitch);
                     }
                 }
-                NoteEvent::NoteOff { note, .. } => {
-                    if note >= start_note && (note - start_note) < num_pads_u8 {
-                        let pad_index = (note - start_note) as usize;
-                        self.player.note_off(pad_index);
-                        self.set_pad_visual(pad_index, false);
+                NoteEvent::NoteOff { note, channel, .. } => {
+                    let event_channel = channel as u8;
+                    // Handle pad chop note off
+                    if pad_chop_channel == 16 || event_channel == pad_chop_channel {
+                        if note >= start_note && (note - start_note) < num_pads_u8 {
+                            let pad_index = (note - start_note) as usize;
+                            self.player.note_off(pad_index);
+                            self.set_pad_visual(pad_index, false);
+                        }
                     }
                 }
                 _ => {}
@@ -477,8 +521,16 @@ impl ClapChop {
     }
 
     fn sync_pitch_semitones(&mut self) {
-        let current_pitch = self.params.pitch_semitones.value();
-        self.player.set_pitch_semitones(current_pitch);
+        let param_pitch = self.params.pitch_semitones.value();
+        // If parameter value changed (user changed it via UI), use the new parameter value
+        // and update tracking
+        if param_pitch != self.last_pitch_param_value {
+            // User changed parameter via UI, use the new value
+            self.last_pitch_semitones = param_pitch;
+            self.last_pitch_param_value = param_pitch;
+        }
+        // Apply the pitch (which may have been updated by MIDI in handle_midi)
+        self.player.set_pitch_semitones(self.last_pitch_semitones);
     }
 
     const fn default_num_pads() -> usize {

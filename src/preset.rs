@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::slicing::SliceAlgorithm;
 use crate::{ClapChopParams, SharedState};
 
-const PRESET_VERSION: u32 = 4;
+const PRESET_VERSION: u32 = 5;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PresetData {
@@ -24,6 +24,18 @@ pub struct PresetData {
     pub pitch_semitones: i32,
     #[serde(default)]
     pub trim_silence: bool,
+    #[serde(default = "default_pad_chop_channel")]
+    pub pad_chop_channel: i32,
+    #[serde(default = "default_pitch_reference_channel")]
+    pub pitch_reference_channel: i32,
+}
+
+fn default_pad_chop_channel() -> i32 {
+    16 // All channels
+}
+
+fn default_pitch_reference_channel() -> i32 {
+    16 // Disabled
 }
 
 impl PresetData {
@@ -45,6 +57,8 @@ impl PresetData {
             playback_speed: params.playback_speed.value(),
             pitch_semitones: params.pitch_semitones.value(),
             trim_silence: params.trim_silence.value(),
+            pad_chop_channel: params.pad_chop_channel.value(),
+            pitch_reference_channel: params.pitch_reference_channel.value(),
         }
     }
 

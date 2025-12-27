@@ -224,6 +224,48 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
             }
         });
 
+        ui.horizontal(|ui| {
+            ui.label("pad chop MIDI channel");
+            let mut pad_channel_value = params.pad_chop_channel.value();
+            let pad_channel_response = ui.add(
+                egui::Slider::new(&mut pad_channel_value, 0..=16)
+                    .clamping(egui::SliderClamping::Always)
+                    .text(""),
+            );
+            let pad_channel_label = if pad_channel_value == 16 {
+                "All".to_string()
+            } else {
+                format!("{}", pad_channel_value + 1)
+            };
+            ui.monospace(pad_channel_label);
+            if pad_channel_response.changed() {
+                setter.begin_set_parameter(&params.pad_chop_channel);
+                setter.set_parameter(&params.pad_chop_channel, pad_channel_value);
+                setter.end_set_parameter(&params.pad_chop_channel);
+            }
+        });
+
+        ui.horizontal(|ui| {
+            ui.label("pitch reference MIDI channel");
+            let mut pitch_ref_channel_value = params.pitch_reference_channel.value();
+            let pitch_ref_channel_response = ui.add(
+                egui::Slider::new(&mut pitch_ref_channel_value, 0..=16)
+                    .clamping(egui::SliderClamping::Always)
+                    .text(""),
+            );
+            let pitch_ref_channel_label = if pitch_ref_channel_value == 16 {
+                "Off".to_string()
+            } else {
+                format!("{}", pitch_ref_channel_value + 1)
+            };
+            ui.monospace(pitch_ref_channel_label);
+            if pitch_ref_channel_response.changed() {
+                setter.begin_set_parameter(&params.pitch_reference_channel);
+                setter.set_parameter(&params.pitch_reference_channel, pitch_ref_channel_value);
+                setter.end_set_parameter(&params.pitch_reference_channel);
+            }
+        });
+
         let mut hold = params.hold_continue.value();
         if ui.checkbox(&mut hold, "hold beyond chop point")
             .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop endpoint.")
@@ -384,6 +426,14 @@ fn apply_preset(
     setter.begin_set_parameter(&params.trim_silence);
     setter.set_parameter(&params.trim_silence, preset.trim_silence);
     setter.end_set_parameter(&params.trim_silence);
+
+    setter.begin_set_parameter(&params.pad_chop_channel);
+    setter.set_parameter(&params.pad_chop_channel, preset.pad_chop_channel);
+    setter.end_set_parameter(&params.pad_chop_channel);
+
+    setter.begin_set_parameter(&params.pitch_reference_channel);
+    setter.set_parameter(&params.pitch_reference_channel, preset.pitch_reference_channel);
+    setter.end_set_parameter(&params.pitch_reference_channel);
 
     if let Some(path) = preset.sample_path.as_ref() {
         let path_string = path.to_string_lossy().into_owned();

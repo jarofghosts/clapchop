@@ -1,3 +1,15 @@
+# 1.4.0
+
+- Added MIDI channel filtering for pad chop triggering
+  - Configure a specific MIDI channel (1-16) to listen to for pad chops
+  - Set to "All" (default) to listen to all MIDI channels (backward compatible)
+- Added MIDI channel for pitch reference updates
+  - Configure a specific MIDI channel (1-16) to listen to for reference pitch updates
+  - When a note is received on this channel, the pitch parameter is updated based on the semitone difference from the starting note
+  - Set to "Off" (default) to disable pitch reference updates
+- MIDI channel settings are now stored as part of presets
+- Preset version incremented to 5
+
 # 1.3.0
 
 - Added pitch offset control in semitones (-24 to +24, default 0)
