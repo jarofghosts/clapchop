@@ -1,3 +1,10 @@
+# 1.3.0
+
+- Added pitch offset control in semitones (-24 to +24, default 0)
+- Pitch adjustment is relative to the root note and affects both pitch and playback speed
+- Pitch semitones setting is now stored as part of presets
+- Preset version incremented to 4
+
 # 1.2.0
 
 - Added trim silence option to automatically remove silent portions from the start and end of samples when loading

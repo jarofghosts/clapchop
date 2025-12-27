@@ -292,6 +292,7 @@ pub struct SamplePlayer {
     pub host_sample_rate: f32,
     src_to_host_ratio: f64,
     playback_speed_multiplier: f64, // playback speed as a multiplier (1.0 = 100%)
+    pitch_semitones: i32, // pitch offset in semitones
     voices: Vec<VoiceState>,
 }
 
@@ -303,6 +304,7 @@ impl SamplePlayer {
             host_sample_rate: 44100.0,
             src_to_host_ratio: 1.0,
             playback_speed_multiplier: 1.0, // default 100%
+            pitch_semitones: 0, // default no pitch shift
             voices: Vec::new(),
         };
         player.set_num_voices(num_voices);
@@ -350,6 +352,11 @@ impl SamplePlayer {
     pub fn set_playback_speed(&mut self, speed_percent: f32) {
         // Convert percentage to multiplier (100% = 1.0, 200% = 2.0, etc.)
         self.playback_speed_multiplier = (speed_percent / 100.0) as f64;
+        self.update_ratio();
+    }
+
+    pub fn set_pitch_semitones(&mut self, semitones: i32) {
+        self.pitch_semitones = semitones;
         self.update_ratio();
     }
 
@@ -434,7 +441,9 @@ impl SamplePlayer {
     fn update_ratio(&mut self) {
         if let Some(s) = &self.sample {
             let base_ratio = (s.sample_rate as f64) / (self.host_sample_rate as f64);
-            self.src_to_host_ratio = base_ratio * self.playback_speed_multiplier;
+            // Convert semitones to pitch ratio: 2^(semitones/12)
+            let pitch_ratio = 2.0_f64.powf(self.pitch_semitones as f64 / 12.0);
+            self.src_to_host_ratio = base_ratio * self.playback_speed_multiplier * pitch_ratio;
         }
     }
 }

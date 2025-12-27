@@ -201,6 +201,29 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
             ui.add(widgets::ParamSlider::for_param(&params.playback_speed, setter).with_width(160.0 * scale));
         });
 
+        ui.horizontal(|ui| {
+            ui.label("pitch");
+            let mut pitch_value = params.pitch_semitones.value();
+            let slider_response = ui.add(
+                egui::Slider::new(&mut pitch_value, -24..=24)
+                    .clamping(egui::SliderClamping::Always)
+                    .text(""),
+            );
+            let pitch_label = if pitch_value == 0 {
+                "0 st".to_string()
+            } else if pitch_value > 0 {
+                format!("+{} st", pitch_value)
+            } else {
+                format!("{} st", pitch_value)
+            };
+            ui.monospace(pitch_label);
+            if slider_response.changed() {
+                setter.begin_set_parameter(&params.pitch_semitones);
+                setter.set_parameter(&params.pitch_semitones, pitch_value);
+                setter.end_set_parameter(&params.pitch_semitones);
+            }
+        });
+
         let mut hold = params.hold_continue.value();
         if ui.checkbox(&mut hold, "hold beyond chop point")
             .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop endpoint.")
@@ -353,6 +376,10 @@ fn apply_preset(
     setter.begin_set_parameter(&params.playback_speed);
     setter.set_parameter(&params.playback_speed, preset.playback_speed);
     setter.end_set_parameter(&params.playback_speed);
+
+    setter.begin_set_parameter(&params.pitch_semitones);
+    setter.set_parameter(&params.pitch_semitones, preset.pitch_semitones);
+    setter.end_set_parameter(&params.pitch_semitones);
 
     setter.begin_set_parameter(&params.trim_silence);
     setter.set_parameter(&params.trim_silence, preset.trim_silence);

@@ -37,6 +37,10 @@ depressing the trigger button will stop sample playback before the chop endpoint
 
 controls the rate at which samples are played back (10-300% in 1% increments, default 100%). 100% = normal speed, 200% = double speed, 50% = half speed, etc.
 
+### pitch
+
+controls the pitch offset in semitones (-24 to +24, default 0). positive values shift pitch up, negative values shift pitch down. each semitone represents a musical half-step (e.g., +12 semitones = one octave up). pitch adjustment affects both pitch and playback speed.
+
 ### trim silence
 
 automatically trims silent portions from the start and end of the sample when loading. uses a threshold of approximately -60 db to detect silence.

@@ -85,6 +85,12 @@ pub struct ClapChopParams {
     #[id = "playspeed"]
     pub playback_speed: FloatParam,
 
+    /// Pitch offset in semitones (-24 to +24, default 0). Controls the pitch shift relative to the root note.
+    /// Positive values shift pitch up, negative values shift pitch down.
+    /// Each semitone represents a musical half-step (e.g., +12 semitones = one octave up).
+    #[id = "pitchsemitones"]
+    pub pitch_semitones: IntParam,
+
     #[id = "trimsilence"]
     pub trim_silence: BoolParam,
 }
@@ -122,6 +128,12 @@ impl Default for ClapChopParams {
             )
             .with_step_size(1.0)
             .with_unit(" %"),
+            pitch_semitones: IntParam::new(
+                "pitch semitones",
+                0,
+                IntRange::Linear { min: -24, max: 24 },
+            )
+            .with_unit(" st"),
             trim_silence: BoolParam::new("trim silence", false),
         }
     }
@@ -137,6 +149,7 @@ pub struct ClapChop {
     last_algo: SliceAlgorithm,
     last_num_pads: usize,
     last_playback_speed: f32,
+    last_pitch_semitones: i32,
     persisted_path_seen: Option<String>,
 }
 
@@ -161,6 +174,7 @@ impl Default for ClapChop {
             last_algo: SliceAlgorithm::Quarter,
             last_num_pads: Self::default_num_pads(),
             last_playback_speed: 100.0,
+            last_pitch_semitones: 0,
             persisted_path_seen: None,
         }
     }
@@ -203,7 +217,9 @@ impl Plugin for ClapChop {
         self.last_bpm = self.params.bpm.value();
         self.last_algo = self.params.slice_algo.value();
         self.last_playback_speed = self.params.playback_speed.value();
+        self.last_pitch_semitones = self.params.pitch_semitones.value();
         self.player.set_playback_speed(self.last_playback_speed);
+        self.player.set_pitch_semitones(self.last_pitch_semitones);
         let desired = {
             let shared = self.shared.read();
             let slice_count = shared.slices.regions.len();
@@ -234,6 +250,7 @@ impl Plugin for ClapChop {
         self.sync_shared_state();
         self.sync_num_pads();
         self.sync_playback_speed();
+        self.sync_pitch_semitones();
         self.handle_reslice_requests();
         self.handle_midi(context);
         self.handle_ui_events();
@@ -457,6 +474,11 @@ impl ClapChop {
         // Only update the player's playback speed, not last_playback_speed
         // (last_playback_speed is updated in handle_reslice_requests to track reslice triggers)
         self.player.set_playback_speed(current_speed);
+    }
+
+    fn sync_pitch_semitones(&mut self) {
+        let current_pitch = self.params.pitch_semitones.value();
+        self.player.set_pitch_semitones(current_pitch);
     }
 
     const fn default_num_pads() -> usize {
