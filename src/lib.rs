@@ -34,6 +34,7 @@ pub struct SharedState {
     pub pending_pad_events: Vec<UiPadEvent>,
     pub pad_visual_state: Vec<bool>,
     pub pad_visual_generation: u64,
+    pub midi_pitch_semitones: Option<i32>, // MIDI-updated pitch value for UI display
 }
 
 impl Default for SharedState {
@@ -50,6 +51,7 @@ impl Default for SharedState {
             pending_pad_events: Vec::new(),
             pad_visual_state: Vec::new(),
             pad_visual_generation: 0,
+            midi_pitch_semitones: None,
         }
     }
 }
@@ -425,7 +427,13 @@ impl ClapChop {
                         let semitone_diff = note as i32 - start_note as i32;
                         // Clamp to valid range
                         let clamped_pitch = semitone_diff.max(-24).min(24);
+                        // Store the pitch update in shared state so the UI can display it
+                        {
+                            let mut shared = self.shared.write();
+                            shared.midi_pitch_semitones = Some(clamped_pitch);
+                        }
                         // Store the pitch update (will be applied in sync_pitch_semitones)
+                        // Don't update last_pitch_param_value here - that should only change when the parameter itself changes
                         self.last_pitch_semitones = clamped_pitch;
                         // Update player directly for immediate effect
                         self.player.set_pitch_semitones(clamped_pitch);
@@ -522,14 +530,31 @@ impl ClapChop {
 
     fn sync_pitch_semitones(&mut self) {
         let param_pitch = self.params.pitch_semitones.value();
+        // Check if there's a MIDI pitch update pending
+        let midi_pitch = {
+            let shared = self.shared.read();
+            shared.midi_pitch_semitones
+        };
+        
         // If parameter value changed (user changed it via UI), use the new parameter value
         // and update tracking
         if param_pitch != self.last_pitch_param_value {
             // User changed parameter via UI, use the new value
             self.last_pitch_semitones = param_pitch;
             self.last_pitch_param_value = param_pitch;
+            // Clear MIDI pitch update flag since user is now controlling it
+            {
+                let mut shared = self.shared.write();
+                shared.midi_pitch_semitones = None;
+            }
+        } else if let Some(midi_val) = midi_pitch {
+            // Parameter hasn't changed, but MIDI has updated - use MIDI value
+            // Only update if it's different from current pitch to avoid unnecessary updates
+            if midi_val != self.last_pitch_semitones {
+                self.last_pitch_semitones = midi_val;
+            }
         }
-        // Apply the pitch (which may have been updated by MIDI in handle_midi)
+        // Apply the pitch (which may have been updated by MIDI in handle_midi or by user via UI)
         self.player.set_pitch_semitones(self.last_pitch_semitones);
     }
 

@@ -70,7 +70,7 @@ pub fn build_editor(
                 sample_loader_row(ui, state, &params, &shared);
                 ui.separator();
 
-                parameter_row(ui, setter, &params);
+                parameter_row(ui, setter, &params, &shared);
 
                 pad_count = {
                     let shared_guard = shared.read();
@@ -155,7 +155,7 @@ fn sample_loader_row(
     }
 }
 
-fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopParams>) {
+fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopParams>, shared: &Arc<RwLock<SharedState>>) {
     ui.vertical(|ui| {
         ui.horizontal(|ui| {
             ui.label("chop algorithm");
@@ -203,7 +203,9 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
 
         ui.horizontal(|ui| {
             ui.label("pitch");
-            let mut pitch_value = params.pitch_semitones.value();
+            // Check if MIDI has updated the pitch value
+            let midi_pitch = shared.read().midi_pitch_semitones;
+            let mut pitch_value = midi_pitch.unwrap_or_else(|| params.pitch_semitones.value());
             let slider_response = ui.add(
                 egui::Slider::new(&mut pitch_value, -24..=24)
                     .clamping(egui::SliderClamping::Always)
@@ -221,6 +223,8 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
                 setter.begin_set_parameter(&params.pitch_semitones);
                 setter.set_parameter(&params.pitch_semitones, pitch_value);
                 setter.end_set_parameter(&params.pitch_semitones);
+                // Clear MIDI pitch update flag since user is now controlling it
+                shared.write().midi_pitch_semitones = None;
             }
         });
 
