@@ -13,7 +13,7 @@ use crate::slicing::SliceAlgorithm;
 use crate::{ClapChop, ClapChopParams, SharedState, UiPadEvent};
 
 pub const DEFAULT_EDITOR_WIDTH: u32 = 850;
-pub const DEFAULT_EDITOR_HEIGHT: u32 = 1120;
+pub const DEFAULT_EDITOR_HEIGHT: u32 = 600;
 const PAD_WIDTH: f32 = 72.0;
 const PAD_HEIGHT: f32 = 64.0;
 const PAD_SPACING: f32 = 6.0;
@@ -383,16 +383,21 @@ fn maybe_resize_editor(
     }
 
     // Use logical points. The host expects logical sizes, not physical pixels.
-    let desired_width = content_size.x.ceil() as u32;
-    let desired_height = (content_size.y + 25.0).ceil() as u32;
+    let mut desired_width = content_size.x.ceil() as u32;
+    let mut desired_height = (content_size.y + 10.0).ceil() as u32;
 
-    let desired_width = desired_width.max(DEFAULT_EDITOR_WIDTH);
-    let desired_height = desired_height.max(DEFAULT_EDITOR_HEIGHT);
+    desired_width = desired_width.max(DEFAULT_EDITOR_WIDTH);
+    // Cap the maximum height to prevent it from growing too large
+    let max_height = 700u32;
+    desired_height = desired_height.min(max_height);
+    
     let desired = (desired_width, desired_height);
     let current = editor_state.size();
 
     let width_diff = desired.0.abs_diff(current.0);
     let height_diff = desired.1.abs_diff(current.1);
+    
+    // Only resize if difference is significant
     if width_diff <= 15 && height_diff <= 15 {
         return;
     }
