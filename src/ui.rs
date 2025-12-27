@@ -218,6 +218,15 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
             setter.set_parameter(&params.gate_on_release, gate);
             setter.end_set_parameter(&params.gate_on_release);
         }
+
+        let mut trim = params.trim_silence.value();
+        if ui.checkbox(&mut trim, "trim silence")
+            .on_hover_text("automatically trim silent portions from the start and end of the sample when loading.")
+            .changed() {
+            setter.begin_set_parameter(&params.trim_silence);
+            setter.set_parameter(&params.trim_silence, trim);
+            setter.end_set_parameter(&params.trim_silence);
+        }
     });
 }
 
@@ -344,6 +353,10 @@ fn apply_preset(
     setter.begin_set_parameter(&params.playback_speed);
     setter.set_parameter(&params.playback_speed, preset.playback_speed);
     setter.end_set_parameter(&params.playback_speed);
+
+    setter.begin_set_parameter(&params.trim_silence);
+    setter.set_parameter(&params.trim_silence, preset.trim_silence);
+    setter.end_set_parameter(&params.trim_silence);
 
     if let Some(path) = preset.sample_path.as_ref() {
         let path_string = path.to_string_lossy().into_owned();

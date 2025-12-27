@@ -37,6 +37,10 @@ depressing the trigger button will stop sample playback before the chop endpoint
 
 controls the rate at which samples are played back (10-300% in 1% increments, default 100%). 100% = normal speed, 200% = double speed, 50% = half speed, etc.
 
+### trim silence
+
+automatically trims silent portions from the start and end of the sample when loading. uses a threshold of approximately -60 db to detect silence.
+
 ### ui scale
 
 sets the size of the text and buttons etc.

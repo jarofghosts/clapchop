@@ -209,6 +209,72 @@ fn make_loaded_sample(
     }
 }
 
+/// Trim silent portions from the start and end of a sample.
+/// Uses a threshold of approximately -60 dB (0.001 in linear amplitude).
+pub fn trim_silence(sample: LoadedSample) -> LoadedSample {
+    const SILENCE_THRESHOLD: f32 = 0.001; // approximately -60 dB
+    
+    if sample.num_frames == 0 {
+        return sample;
+    }
+
+    // Find the first non-silent frame from the start
+    let mut start_idx = sample.num_frames;
+    for i in 0..sample.num_frames {
+        let amplitude = if sample.stereo {
+            sample.data_l[i].abs().max(sample.data_r[i].abs())
+        } else {
+            sample.data_l[i].abs()
+        };
+        if amplitude > SILENCE_THRESHOLD {
+            start_idx = i;
+            break;
+        }
+    }
+
+    // If no non-silent frame was found, the entire sample is silent
+    if start_idx >= sample.num_frames {
+        return sample;
+    }
+
+    // Find the last non-silent frame from the end
+    let mut end_idx = sample.num_frames;
+    for i in (start_idx..sample.num_frames).rev() {
+        let amplitude = if sample.stereo {
+            sample.data_l[i].abs().max(sample.data_r[i].abs())
+        } else {
+            sample.data_l[i].abs()
+        };
+        if amplitude > SILENCE_THRESHOLD {
+            end_idx = i + 1;
+            break;
+        }
+    }
+
+    // Trim the sample
+    let num_frames = end_idx - start_idx;
+    if sample.stereo {
+        let l: Vec<f32> = sample.data_l[start_idx..end_idx].to_vec();
+        let r: Vec<f32> = sample.data_r[start_idx..end_idx].to_vec();
+        LoadedSample {
+            data_l: Arc::new(l),
+            data_r: Arc::new(r),
+            sample_rate: sample.sample_rate,
+            num_frames,
+            stereo: true,
+        }
+    } else {
+        let l: Vec<f32> = sample.data_l[start_idx..end_idx].to_vec();
+        LoadedSample {
+            data_l: Arc::new(l),
+            data_r: Arc::new(Vec::new()),
+            sample_rate: sample.sample_rate,
+            num_frames,
+            stereo: false,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct VoiceState {
     pub active: bool,

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::slicing::SliceAlgorithm;
 use crate::{ClapChopParams, SharedState};
 
-const PRESET_VERSION: u32 = 2;
+const PRESET_VERSION: u32 = 3;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PresetData {
@@ -20,6 +20,8 @@ pub struct PresetData {
     pub gate_on_release: bool,
     pub num_pads: i32,
     pub playback_speed: f32,
+    #[serde(default)]
+    pub trim_silence: bool,
 }
 
 impl PresetData {
@@ -39,13 +41,15 @@ impl PresetData {
             gate_on_release: params.gate_on_release.value(),
             num_pads: pad_count,
             playback_speed: params.playback_speed.value(),
+            trim_silence: params.trim_silence.value(),
         }
     }
 
     pub fn validate(&self) -> Result<(), String> {
-        if self.version != PRESET_VERSION {
+        // Allow older versions for backward compatibility
+        if self.version > PRESET_VERSION {
             return Err(format!(
-                "Unsupported preset version {} (expected {PRESET_VERSION})",
+                "Preset version {} is newer than supported version {PRESET_VERSION}",
                 self.version
             ));
         }

@@ -10,7 +10,7 @@ mod sample;
 mod slicing;
 mod ui;
 
-use sample::{LoadedSample, SamplePlayer};
+use sample::{trim_silence, LoadedSample, SamplePlayer};
 use slicing::{SliceAlgorithm, Slices};
 
 pub const MAX_PADS: usize = 64;
@@ -84,6 +84,9 @@ pub struct ClapChopParams {
     /// 100% = normal speed, 200% = double speed, 50% = half speed, etc.
     #[id = "playspeed"]
     pub playback_speed: FloatParam,
+
+    #[id = "trimsilence"]
+    pub trim_silence: BoolParam,
 }
 
 impl Default for ClapChopParams {
@@ -119,6 +122,7 @@ impl Default for ClapChopParams {
             )
             .with_step_size(1.0)
             .with_unit(" %"),
+            trim_silence: BoolParam::new("trim silence", false),
         }
     }
 }
@@ -521,7 +525,12 @@ impl ClapChop {
         }
 
         std::thread::spawn(move || match sample::load_sample(&path) {
-            Ok(sample) => {
+            Ok(mut sample) => {
+                // Apply trimming if enabled
+                if params.trim_silence.value() {
+                    sample = trim_silence(sample);
+                }
+
                 let bpm = params.bpm.value();
                 let algo = params.slice_algo.value();
                 let playback_speed = params.playback_speed.value();

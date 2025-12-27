@@ -1,3 +1,9 @@
+# 1.2.0
+
+- Added trim silence option to automatically remove silent portions from the start and end of samples when loading
+- Trim silence setting is now stored as part of presets
+- Preset version incremented to 3
+
 # 1.1.0
 
 - Added playback speed control (10-300% in 1% increments, default 100%)
