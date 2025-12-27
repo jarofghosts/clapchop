@@ -54,6 +54,7 @@ pub fn compute_slices(
     bpm: f32,
     algo: SliceAlgorithm,
     max_regions: usize,
+    playback_speed_percent: f32,
 ) -> Slices {
     if max_regions == 0 {
         return Slices::empty();
@@ -67,12 +68,16 @@ pub fn compute_slices(
     let seconds_per_beat = 60.0 / bpm;
     let beats_per_bar = 4.0; // assume 4/4
 
+    // Adjust slice duration based on playback speed
+    // At 200% speed, slices should be double the duration in source frames (sample plays 2x faster, so need 2x frames for same real-time duration)
+    // At 50% speed, slices should be half the duration in source frames (sample plays 0.5x faster, so need 0.5x frames for same real-time duration)
+    let speed_multiplier = playback_speed_percent / 100.0;
     let frames_per_region = match algo {
         SliceAlgorithm::Quarter => seconds_per_beat,
         SliceAlgorithm::Eighth => seconds_per_beat * 0.5,
         SliceAlgorithm::Sixteenth => seconds_per_beat * 0.25,
         SliceAlgorithm::Bars => seconds_per_beat * beats_per_bar,
-    } * sr;
+    } * sr * speed_multiplier;
 
     let frames_per_region = frames_per_region.max(1.0) as usize;
     let mut regions = Vec::new();

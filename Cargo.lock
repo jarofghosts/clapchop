@@ -498,7 +498,7 @@ source = "git+https://github.com/micahrj/clap-sys.git?rev=25d7f53fdb6363ad63fbd8
 
 [[package]]
 name = "clapchop"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "crossbeam-utils",
  "egui 0.26.2",

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::slicing::SliceAlgorithm;
 use crate::{ClapChopParams, SharedState};
 
-const PRESET_VERSION: u32 = 1;
+const PRESET_VERSION: u32 = 2;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PresetData {
@@ -19,6 +19,7 @@ pub struct PresetData {
     pub hold_continue: bool,
     pub gate_on_release: bool,
     pub num_pads: i32,
+    pub playback_speed: f32,
 }
 
 impl PresetData {
@@ -37,6 +38,7 @@ impl PresetData {
             hold_continue: params.hold_continue.value(),
             gate_on_release: params.gate_on_release.value(),
             num_pads: pad_count,
+            playback_speed: params.playback_speed.value(),
         }
     }
 

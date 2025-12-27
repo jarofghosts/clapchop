@@ -195,6 +195,12 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
                 }
             });
 
+        ui.horizontal(|ui| {
+            ui.label("playback speed");
+            let scale = *params.ui_scale.read();
+            ui.add(widgets::ParamSlider::for_param(&params.playback_speed, setter).with_width(160.0 * scale));
+        });
+
         let mut hold = params.hold_continue.value();
         if ui.checkbox(&mut hold, "hold beyond chop point")
             .on_hover_text("continuing to hold the trigger button will continue playing sample past the chop endpoint.")
@@ -334,6 +340,10 @@ fn apply_preset(
     setter.begin_set_parameter(&params.gate_on_release);
     setter.set_parameter(&params.gate_on_release, preset.gate_on_release);
     setter.end_set_parameter(&params.gate_on_release);
+
+    setter.begin_set_parameter(&params.playback_speed);
+    setter.set_parameter(&params.playback_speed, preset.playback_speed);
+    setter.end_set_parameter(&params.playback_speed);
 
     if let Some(path) = preset.sample_path.as_ref() {
         let path_string = path.to_string_lossy().into_owned();

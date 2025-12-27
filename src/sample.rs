@@ -225,6 +225,7 @@ pub struct SamplePlayer {
     slices: Slices,
     pub host_sample_rate: f32,
     src_to_host_ratio: f64,
+    playback_speed_multiplier: f64, // playback speed as a multiplier (1.0 = 100%)
     voices: Vec<VoiceState>,
 }
 
@@ -235,6 +236,7 @@ impl SamplePlayer {
             slices: Slices::empty(),
             host_sample_rate: 44100.0,
             src_to_host_ratio: 1.0,
+            playback_speed_multiplier: 1.0, // default 100%
             voices: Vec::new(),
         };
         player.set_num_voices(num_voices);
@@ -275,8 +277,14 @@ impl SamplePlayer {
     }
 
     pub fn set_sample(&mut self, sample: LoadedSample) {
-        self.src_to_host_ratio = (sample.sample_rate as f64) / (self.host_sample_rate as f64);
         self.sample = Some(sample);
+        self.update_ratio();
+    }
+
+    pub fn set_playback_speed(&mut self, speed_percent: f32) {
+        // Convert percentage to multiplier (100% = 1.0, 200% = 2.0, etc.)
+        self.playback_speed_multiplier = (speed_percent / 100.0) as f64;
+        self.update_ratio();
     }
 
     pub fn set_slices(&mut self, slices: Slices) {
@@ -359,7 +367,8 @@ impl SamplePlayer {
 
     fn update_ratio(&mut self) {
         if let Some(s) = &self.sample {
-            self.src_to_host_ratio = (s.sample_rate as f64) / (self.host_sample_rate as f64);
+            let base_ratio = (s.sample_rate as f64) / (self.host_sample_rate as f64);
+            self.src_to_host_ratio = base_ratio * self.playback_speed_multiplier;
         }
     }
 }

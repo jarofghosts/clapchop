@@ -79,6 +79,11 @@ pub struct ClapChopParams {
 
     #[id = "gate"]
     pub gate_on_release: BoolParam,
+
+    /// Playback speed in percent (10-300%, default 100%). Controls the rate at which samples are played back.
+    /// 100% = normal speed, 200% = double speed, 50% = half speed, etc.
+    #[id = "playspeed"]
+    pub playback_speed: FloatParam,
 }
 
 impl Default for ClapChopParams {
@@ -107,6 +112,13 @@ impl Default for ClapChopParams {
             slice_algo: EnumParam::new("slice algorithm", SliceAlgorithm::Quarter),
             hold_continue: BoolParam::new("hold beyond chop", true),
             gate_on_release: BoolParam::new("stop chop on release", true),
+            playback_speed: FloatParam::new(
+                "playback speed",
+                100.0,
+                FloatRange::Linear { min: 10.0, max: 300.0 },
+            )
+            .with_step_size(1.0)
+            .with_unit(" %"),
         }
     }
 }
@@ -120,6 +132,7 @@ pub struct ClapChop {
     last_bpm: f32,
     last_algo: SliceAlgorithm,
     last_num_pads: usize,
+    last_playback_speed: f32,
     persisted_path_seen: Option<String>,
 }
 
@@ -143,6 +156,7 @@ impl Default for ClapChop {
             last_bpm: 120.0,
             last_algo: SliceAlgorithm::Quarter,
             last_num_pads: Self::default_num_pads(),
+            last_playback_speed: 100.0,
             persisted_path_seen: None,
         }
     }
@@ -184,6 +198,8 @@ impl Plugin for ClapChop {
         self.player.set_sample_rate(buffer_config.sample_rate);
         self.last_bpm = self.params.bpm.value();
         self.last_algo = self.params.slice_algo.value();
+        self.last_playback_speed = self.params.playback_speed.value();
+        self.player.set_playback_speed(self.last_playback_speed);
         let desired = {
             let shared = self.shared.read();
             let slice_count = shared.slices.regions.len();
@@ -213,6 +229,7 @@ impl Plugin for ClapChop {
         self.ensure_persisted_sample_loaded();
         self.sync_shared_state();
         self.sync_num_pads();
+        self.sync_playback_speed();
         self.handle_reslice_requests();
         self.handle_midi(context);
         self.handle_ui_events();
@@ -290,9 +307,12 @@ impl ClapChop {
     fn handle_reslice_requests(&mut self) {
         let bpm = self.params.bpm.value();
         let algo = self.params.slice_algo.value();
+        let playback_speed = self.params.playback_speed.value();
 
         let reslice_due_to_param =
-            (bpm - self.last_bpm).abs() > f32::EPSILON || algo != self.last_algo;
+            (bpm - self.last_bpm).abs() > f32::EPSILON 
+            || algo != self.last_algo
+            || (playback_speed - self.last_playback_speed).abs() > f32::EPSILON;
         let reslice_due_to_ui = {
             let mut shared = self.shared.write();
             if shared.pending_reslice {
@@ -308,7 +328,7 @@ impl ClapChop {
                 let shared = self.shared.read();
                 shared.sample.clone()
             } {
-                let slices = slicing::compute_slices(&sample, bpm, algo, MAX_PADS);
+                let slices = slicing::compute_slices(&sample, bpm, algo, MAX_PADS, playback_speed);
                 let pad_count = slices.regions.len();
                 self.player.set_slices(slices.clone());
                 let current_gen = {
@@ -328,6 +348,7 @@ impl ClapChop {
 
         self.last_bpm = bpm;
         self.last_algo = algo;
+        self.last_playback_speed = playback_speed;
     }
 
     fn handle_midi(&mut self, context: &mut impl ProcessContext<Self>) {
@@ -427,6 +448,13 @@ impl ClapChop {
         self.set_pad_count(desired);
     }
 
+    fn sync_playback_speed(&mut self) {
+        let current_speed = self.params.playback_speed.value();
+        // Only update the player's playback speed, not last_playback_speed
+        // (last_playback_speed is updated in handle_reslice_requests to track reslice triggers)
+        self.player.set_playback_speed(current_speed);
+    }
+
     const fn default_num_pads() -> usize {
         16
     }
@@ -496,7 +524,8 @@ impl ClapChop {
             Ok(sample) => {
                 let bpm = params.bpm.value();
                 let algo = params.slice_algo.value();
-                let slices = slicing::compute_slices(&sample, bpm, algo, MAX_PADS);
+                let playback_speed = params.playback_speed.value();
+                let slices = slicing::compute_slices(&sample, bpm, algo, MAX_PADS, playback_speed);
                 let pad_count = slices.regions.len();
 
                 let mut guard = shared.write();

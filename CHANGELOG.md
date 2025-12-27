@@ -1,3 +1,9 @@
+# 1.1.0
+
+- Added playback speed control (10-300% in 1% increments, default 100%)
+- Playback speed is now stored as part of presets
+- Preset version incremented to 2
+
 # 1.0.0
 
 - Rearranged UI

@@ -33,6 +33,10 @@ continuing to hold the trigger button will continue playing sample past the chop
 
 depressing the trigger button will stop sample playback before the chop endpoint.
 
+### playback speed
+
+controls the rate at which samples are played back (10-300% in 1% increments, default 100%). 100% = normal speed, 200% = double speed, 50% = half speed, etc.
+
 ### ui scale
 
 sets the size of the text and buttons etc.
