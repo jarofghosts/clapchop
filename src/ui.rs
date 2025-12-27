@@ -226,44 +226,56 @@ fn parameter_row(ui: &mut egui::Ui, setter: &ParamSetter, params: &Arc<ClapChopP
 
         ui.horizontal(|ui| {
             ui.label("pad chop MIDI channel");
-            let mut pad_channel_value = params.pad_chop_channel.value();
-            let pad_channel_response = ui.add(
-                egui::Slider::new(&mut pad_channel_value, 0..=16)
-                    .clamping(egui::SliderClamping::Always)
-                    .text(""),
-            );
+            let pad_channel_value = params.pad_chop_channel.value();
             let pad_channel_label = if pad_channel_value == 16 {
                 "All".to_string()
             } else {
                 format!("{}", pad_channel_value + 1)
             };
-            ui.monospace(pad_channel_label);
-            if pad_channel_response.changed() {
-                setter.begin_set_parameter(&params.pad_chop_channel);
-                setter.set_parameter(&params.pad_chop_channel, pad_channel_value);
-                setter.end_set_parameter(&params.pad_chop_channel);
-            }
+            egui::ComboBox::from_id_salt("pad_chop_channel_combo")
+                .selected_text(pad_channel_label)
+                .show_ui(ui, |ui| {
+                    for channel in 0..=16 {
+                        let label = if channel == 16 {
+                            "All".to_string()
+                        } else {
+                            format!("{}", channel + 1)
+                        };
+                        let selected = pad_channel_value == channel;
+                        if ui.selectable_label(selected, label).clicked() {
+                            setter.begin_set_parameter(&params.pad_chop_channel);
+                            setter.set_parameter(&params.pad_chop_channel, channel);
+                            setter.end_set_parameter(&params.pad_chop_channel);
+                        }
+                    }
+                });
         });
 
         ui.horizontal(|ui| {
             ui.label("pitch reference MIDI channel");
-            let mut pitch_ref_channel_value = params.pitch_reference_channel.value();
-            let pitch_ref_channel_response = ui.add(
-                egui::Slider::new(&mut pitch_ref_channel_value, 0..=16)
-                    .clamping(egui::SliderClamping::Always)
-                    .text(""),
-            );
+            let pitch_ref_channel_value = params.pitch_reference_channel.value();
             let pitch_ref_channel_label = if pitch_ref_channel_value == 16 {
                 "Off".to_string()
             } else {
                 format!("{}", pitch_ref_channel_value + 1)
             };
-            ui.monospace(pitch_ref_channel_label);
-            if pitch_ref_channel_response.changed() {
-                setter.begin_set_parameter(&params.pitch_reference_channel);
-                setter.set_parameter(&params.pitch_reference_channel, pitch_ref_channel_value);
-                setter.end_set_parameter(&params.pitch_reference_channel);
-            }
+            egui::ComboBox::from_id_salt("pitch_ref_channel_combo")
+                .selected_text(pitch_ref_channel_label)
+                .show_ui(ui, |ui| {
+                    for channel in 0..=16 {
+                        let label = if channel == 16 {
+                            "Off".to_string()
+                        } else {
+                            format!("{}", channel + 1)
+                        };
+                        let selected = pitch_ref_channel_value == channel;
+                        if ui.selectable_label(selected, label).clicked() {
+                            setter.begin_set_parameter(&params.pitch_reference_channel);
+                            setter.set_parameter(&params.pitch_reference_channel, channel);
+                            setter.end_set_parameter(&params.pitch_reference_channel);
+                        }
+                    }
+                });
         });
 
         let mut hold = params.hold_continue.value();
