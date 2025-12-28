@@ -35,11 +35,11 @@ depressing the trigger button will stop sample playback before the chop endpoint
 
 ### playback speed
 
-controls the rate at which samples are played back (10-300% in 1% increments, default 100%). 100% = normal speed, 200% = double speed, 50% = half speed, etc.
+controls the rate at which samples are played back.
 
 ### pitch
 
-controls the pitch offset in semitones (-24 to +24, default 0). positive values shift pitch up, negative values shift pitch down. each semitone represents a musical half-step (e.g., +12 semitones = one octave up). pitch adjustment affects both pitch and playback speed.
+controls the pitch offset in semitones. pitch adjustment affects both pitch and playback speed.
 
 ### trim silence
 
@@ -47,7 +47,7 @@ automatically trims silent portions from the start and end of the sample when lo
 
 ### pad chop MIDI channel
 
-sets which MIDI channel (1-16) to listen to for pad chop triggering. set to "All" (default) to listen to all MIDI channels. useful when you want to separate pad triggers from other MIDI input.
+sets which MIDI channel (1-16) to listen to for pad chop triggering. set to "All" (default) to listen to all MIDI channels.
 
 ### pitch reference MIDI channel
 
